@@ -4,7 +4,7 @@ import Backlink from "../components/Backlink";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import TextInput from "../components/TextInput";
-import { Supa } from "../supabase/supabase";
+import { CategoryResource } from "../supabase/category-resource";
 import { checkAuth } from "../utils/check-auth";
 
 const AddCategory: Component = () => {
@@ -17,10 +17,9 @@ const AddCategory: Component = () => {
 
     const target = e.target as HTMLFormElement;
     const formData = new FormData(target);
+    const name = formData.get("name") as string;
 
-    const name = formData.get("name");
-
-    await Supa.client.from("categories").insert([{ name }]);
+    await CategoryResource.addCategory([{ name }]);
 
     navigate("/");
   };

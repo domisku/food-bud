@@ -14,7 +14,8 @@ import Selector from "../components/Selector";
 import Spinner from "../components/Spinner";
 import { ICategory } from "../models/category.interface";
 import { IDish } from "../models/dish.interface";
-import { Supa } from "../supabase/supabase";
+import { CategoryResource } from "../supabase/category-resource";
+import { DishResource } from "../supabase/dish-resource";
 import { checkAuth } from "../utils/check-auth";
 
 const Home: Component = () => {
@@ -27,36 +28,21 @@ const Home: Component = () => {
   const navigate = useNavigate();
 
   onMount(async () => {
-    const { data: categories } = await Supa.client
-      .from("categories")
-      .select("*");
-    setCategories(categories as ICategory[]);
+    const categories = await CategoryResource.getCategories();
+    setCategories(categories);
   });
 
   createEffect(async () => {
     if (filters().length > 0) {
-      const filterIds = filters().join(", ");
-
-      const { data } = await Supa.client
-        .rpc("custom", {
-          sql: `
-      SELECT DISTINCT dishes.id, dishes.name, dishes.description
-      FROM tags
-      JOIN dishes ON tags.dish_id = dishes.id
-      WHERE tags.category_id IN (${filterIds});
-      `,
-        })
-        .order("id");
+      const data = await DishResource.getFilteredDishes(filters());
 
       setDishes(data);
       return;
     }
 
-    const { data: dishes } = await Supa.client
-      .from("dishes")
-      .select("id, name")
-      .order("id");
-    setDishes(dishes as IDish[]);
+    const dishes = await DishResource.getDishes();
+
+    setDishes(dishes);
   });
 
   const onChange = (e: Event, id: number) => {

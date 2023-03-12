@@ -6,7 +6,8 @@ import Heading from "../components/Heading";
 import Spinner from "../components/Spinner";
 import Tag from "../components/Tag";
 import { IDish } from "../models/dish.interface";
-import { Supa } from "../supabase/supabase";
+import { CategoryResource } from "../supabase/category-resource";
+import { DishResource } from "../supabase/dish-resource";
 
 const Dish: Component = () => {
   const params = useParams();
@@ -17,28 +18,16 @@ const Dish: Component = () => {
   onMount(async () => {
     const dishId = params.id;
 
-    const { data } = await Supa.client
-      .from("dishes")
-      .select("*")
-      .eq("id", dishId)
-      .single();
+    const data = await DishResource.getDish(dishId);
+    setDish(data);
 
-    setDish(data as IDish);
-
-    const { data: categoriesDto } = await Supa.client
-      .from("tags")
-      .select("categories (name)")
-      .eq("dish_id", dishId);
-
-    const categories: string[] = categoriesDto.map(
-      (c: any) => c.categories.name
-    );
-
-    setCategories(categories);
+    const categoryNames = await CategoryResource.getCategoryNames(dishId);
+    setCategories(categoryNames);
   });
 
   const onDelete = async () => {
-    await Supa.client.from("dishes").delete().eq("id", dish().id);
+    await DishResource.deleteDish(dish().id);
+
     navigate("/");
   };
 

@@ -9,7 +9,9 @@ import TextArea from "../components/TextArea";
 import TextInput from "../components/TextInput";
 import { ICategory } from "../models/category.interface";
 import { IDish } from "../models/dish.interface";
-import { Supa } from "../supabase/supabase";
+import { CategoryResource } from "../supabase/category-resource";
+import { DishResource } from "../supabase/dish-resource";
+import { TagsResource } from "../supabase/tags-resource";
 
 const EditDish: Component = () => {
   const location = useLocation();
@@ -23,12 +25,7 @@ const EditDish: Component = () => {
   const dish = location.state as IDish;
 
   onMount(async () => {
-    const { data } = await Supa.client
-      .from("tags")
-      .select("category_id")
-      .eq("dish_id", dish.id);
-
-    const categoryIds = data.map((d) => d.category_id);
+    const categoryIds = await TagsResource.getDishCategoryIds(dish.id);
 
     setSelectedCategoryIds(categoryIds);
 
@@ -39,9 +36,7 @@ const EditDish: Component = () => {
 
     setChecked(checked);
 
-    const { data: categories } = await Supa.client
-      .from("categories")
-      .select("*");
+    const categories = await CategoryResource.getCategories();
 
     setCategories(categories as ICategory[]);
   });
@@ -52,22 +47,18 @@ const EditDish: Component = () => {
     const target = e.target as HTMLFormElement;
     const formData = new FormData(target);
 
-    const name = formData.get("name");
-    const description = formData.get("description");
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
 
-    await Supa.client
-      .from("dishes")
-      .update({ name, description })
-      .eq("id", dish.id);
+    await DishResource.updateDish(dish.id, { name, description });
 
     const tagsPayload = selectedCategoryIds().map((c) => ({
       dish_id: dish.id,
       category_id: c,
     }));
 
-    await Supa.client.from("tags").delete().eq("dish_id", dish.id);
-
-    await Supa.client.from("tags").insert(tagsPayload);
+    await TagsResource.deleteDishTags(dish.id);
+    await TagsResource.addTags(tagsPayload);
 
     navigate("/");
   };

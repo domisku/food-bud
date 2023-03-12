@@ -8,7 +8,8 @@ import Selector from "../components/Selector";
 import TextArea from "../components/TextArea";
 import TextInput from "../components/TextInput";
 import { ICategory } from "../models/category.interface";
-import { Supa } from "../supabase/supabase";
+import { CategoryResource } from "../supabase/category-resource";
+import { DishResource } from "../supabase/dish-resource";
 import { checkAuth } from "../utils/check-auth";
 
 const AddDish: Component = () => {
@@ -22,9 +23,9 @@ const AddDish: Component = () => {
   const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
 
   onMount(async () => {
-    const { data } = await Supa.client.from("categories").select("*");
+    const data = await CategoryResource.getCategories();
 
-    setCategories(data as ICategory[]);
+    setCategories(data);
   });
 
   const submit = async (e: SubmitEvent) => {
@@ -34,23 +35,10 @@ const AddDish: Component = () => {
 
     const target = e.target as HTMLFormElement;
     const formData = new FormData(target);
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
 
-    const name = formData.get("name");
-    const description = formData.get("description");
-
-    const { data } = await Supa.client
-      .from("dishes")
-      .insert([{ name, description }])
-      .select("id");
-
-    const insertedDishId = data[0].id;
-
-    const tagsPayload = selectedCategoryIds.map((c) => ({
-      dish_id: insertedDishId,
-      category_id: c,
-    }));
-
-    await Supa.client.from("tags").insert(tagsPayload);
+    await DishResource.addDish({ name, description }, selectedCategoryIds);
 
     navigate("/");
   };

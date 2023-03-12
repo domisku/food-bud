@@ -3,12 +3,12 @@ import { Component } from "solid-js";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import TextInput from "../components/TextInput";
-import { Supa } from "../supabase/supabase";
+import { AuthResource } from "../supabase/auth-resource";
 
 const Login: Component = () => {
   const navigate = useNavigate();
 
-  const logIn = async (e: SubmitEvent) => {
+  const login = async (e: SubmitEvent) => {
     e.preventDefault();
 
     const target = e.target as HTMLFormElement;
@@ -16,10 +16,7 @@ const Login: Component = () => {
     const password = formData.get("password") as string;
     const email = import.meta.env.VITE_ROOT_EMAIL;
 
-    await Supa.client.auth.signInWithPassword({
-      email,
-      password,
-    });
+    await AuthResource.login(email, password);
 
     navigate("/");
   };
@@ -27,7 +24,7 @@ const Login: Component = () => {
   return (
     <>
       <Heading>Prisijunkite</Heading>
-      <form onSubmit={logIn}>
+      <form onSubmit={login}>
         <label for="email">Slaptažodis</label>
         <TextInput id="password" type="password"></TextInput>
         <Button type="submit">Prisijungti</Button>
