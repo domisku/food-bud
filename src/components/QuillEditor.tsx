@@ -47,7 +47,9 @@ const QuillEditor: Component<IQuillEditorProps> = (props) => {
   });
 
   createEffect(() => {
-    quill().setContents(JSON.parse(props.contents));
+    if (props.contents) {
+      quill().setContents(JSON.parse(props.contents));
+    }
   });
 
   return (

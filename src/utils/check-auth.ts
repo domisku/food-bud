@@ -13,7 +13,6 @@ export function checkAuth() {
 
     if (session) {
       Supa.session = session;
-      console.log("Session data saved!");
     } else {
       navigate("/login");
     }

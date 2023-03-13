@@ -13,6 +13,7 @@ import { DishResource } from "../supabase/dish-resource";
 import { TagsResource } from "../supabase/tags-resource";
 
 import QuillEditor from "../components/QuillEditor";
+import { isQuillBlank } from "../utils/is-quill-blank";
 
 const EditDish: Component = () => {
   const location = useLocation();
@@ -50,7 +51,7 @@ const EditDish: Component = () => {
     const formData = new FormData(target);
 
     const name = formData.get("name") as string;
-    const description = contents();
+    const description = isQuillBlank(contents()) ? null : contents();
 
     await DishResource.updateDish(dish.id, { name, description });
 

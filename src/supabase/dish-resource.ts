@@ -8,20 +8,22 @@ export class DishResource {
   static async addDish(
     dish: Partial<IDish>,
     categoryIds: ICategory["id"][]
-  ): Promise<PostgrestSingleResponse<null>> {
+  ): Promise<number> {
     const { data } = await Supa.client
       .from("dishes")
       .insert([dish])
       .select("id");
 
-    const insertedDishId = data[0].id;
+    const insertedDishId = data[0].id as number;
 
     const tagsPayload = categoryIds.map((c) => ({
       dish_id: insertedDishId,
       category_id: c,
     }));
 
-    return await TagsResource.addTags(tagsPayload);
+    await TagsResource.addTags(tagsPayload);
+
+    return insertedDishId;
   }
 
   static async getDish(id: string): Promise<IDish> {

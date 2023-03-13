@@ -4,13 +4,14 @@ import Backlink from "../components/Backlink";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import Heading from "../components/Heading";
+import QuillEditor from "../components/QuillEditor";
 import Selector from "../components/Selector";
-import TextArea from "../components/TextArea";
 import TextInput from "../components/TextInput";
 import { ICategory } from "../models/category.interface";
 import { CategoryResource } from "../supabase/category-resource";
 import { DishResource } from "../supabase/dish-resource";
 import { checkAuth } from "../utils/check-auth";
+import { isQuillBlank } from "../utils/is-quill-blank";
 
 const AddDish: Component = () => {
   checkAuth();
@@ -21,6 +22,7 @@ const AddDish: Component = () => {
     []
   );
   const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
+  const [contents, setContents] = createSignal<string>(null);
 
   onMount(async () => {
     const data = await CategoryResource.getCategories();
@@ -36,11 +38,14 @@ const AddDish: Component = () => {
     const target = e.target as HTMLFormElement;
     const formData = new FormData(target);
     const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
+    const description = isQuillBlank(contents()) ? null : contents();
 
-    await DishResource.addDish({ name, description }, selectedCategoryIds);
+    const id = await DishResource.addDish(
+      { name, description },
+      selectedCategoryIds
+    );
 
-    navigate("/");
+    navigate(`/dishes/${id}`);
   };
 
   const onChange = (e: Event, category: ICategory) => {
@@ -65,6 +70,10 @@ const AddDish: Component = () => {
     setChecked({});
   };
 
+  const onContentsChange = (contents: string) => {
+    setContents(contents);
+  };
+
   return (
     <>
       <Backlink class="mb-6">Grįžti</Backlink>
@@ -77,12 +86,10 @@ const AddDish: Component = () => {
         <label class="block" for="description">
           Aprašymas
         </label>
-        <TextArea
+        <QuillEditor
           id="description"
-          placeholder={
-            "Papildoma informacija apie patiekalą (pvz.: receptas, komentarai ir t.t.)"
-          }
-        ></TextArea>
+          onContentsChange={onContentsChange}
+        ></QuillEditor>
 
         <Selector
           placeholder="Pasirinkite kategorijas"
