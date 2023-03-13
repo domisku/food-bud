@@ -3,6 +3,7 @@ import { Component, createSignal, For, onMount, Show } from "solid-js";
 import Backlink from "../components/Backlink";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
+import QuillReadonly from "../components/QuillReadonly";
 import Spinner from "../components/Spinner";
 import Tag from "../components/Tag";
 import { IDish } from "../models/dish.interface";
@@ -36,7 +37,7 @@ const Dish: Component = () => {
       <Backlink class="mb-6">Grįžti</Backlink>
       <Heading>{dish().name}</Heading>
       <Show when={dish().description}>
-        <p class="mb-4 max-h-96 overflow-y-auto">{dish().description}</p>
+        <QuillReadonly contents={dish().description}></QuillReadonly>
       </Show>
       <div class="flex flex-wrap gap-x-2 gap-y-2 mb-4">
         <For each={categories()}>{(category) => <Tag>{category}</Tag>}</For>

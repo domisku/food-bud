@@ -5,13 +5,14 @@ import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import Heading from "../components/Heading";
 import Selector from "../components/Selector";
-import TextArea from "../components/TextArea";
 import TextInput from "../components/TextInput";
 import { ICategory } from "../models/category.interface";
 import { IDish } from "../models/dish.interface";
 import { CategoryResource } from "../supabase/category-resource";
 import { DishResource } from "../supabase/dish-resource";
 import { TagsResource } from "../supabase/tags-resource";
+
+import QuillEditor from "../components/QuillEditor";
 
 const EditDish: Component = () => {
   const location = useLocation();
@@ -21,6 +22,7 @@ const EditDish: Component = () => {
     []
   );
   const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
+  const [contents, setContents] = createSignal<string>("");
 
   const dish = location.state as IDish;
 
@@ -48,7 +50,7 @@ const EditDish: Component = () => {
     const formData = new FormData(target);
 
     const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
+    const description = contents();
 
     await DishResource.updateDish(dish.id, { name, description });
 
@@ -60,7 +62,7 @@ const EditDish: Component = () => {
     await TagsResource.deleteDishTags(dish.id);
     await TagsResource.addTags(tagsPayload);
 
-    navigate("/");
+    navigate(`/dishes/${dish.id}`);
   };
 
   const onChange = (e: Event, id: number) => {
@@ -82,6 +84,10 @@ const EditDish: Component = () => {
     setChecked({});
   };
 
+  const onContentsChange = (contents: string) => {
+    setContents(contents);
+  };
+
   return (
     <>
       <Backlink class="mb-6">Grįžti</Backlink>
@@ -95,16 +101,16 @@ const EditDish: Component = () => {
           placeholder={"Bulviniai blynai"}
           value={dish.name}
         ></TextInput>
+
         <label class="block" for="description">
           Aprašymas
         </label>
-        <TextArea
+        <QuillEditor
           id="description"
-          placeholder={
-            "Papildoma informacija apie patiekalą (pvz.: receptas, komentarai ir t.t.)"
-          }
-          value={dish.description}
-        ></TextArea>
+          contents={dish.description}
+          onContentsChange={onContentsChange}
+        ></QuillEditor>
+
         <Selector onClearAll={onClearAll} openUp={true}>
           <For each={categories()}>
             {(category) => (
