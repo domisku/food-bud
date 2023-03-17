@@ -6,7 +6,7 @@ interface ITagProps {
 
 const Tag: Component<ITagProps> = (props) => {
   return (
-    <span class="rounded-xl border border-gray-200 py-2 px-3">
+    <span class="rounded-xl border border-gray-200 py-1 px-2 text-sm">
       {props.children}
     </span>
   );
