@@ -13,6 +13,7 @@ import { DishResource } from "../supabase/dish-resource";
 import { TagsResource } from "../supabase/tags-resource";
 
 import QuillEditor from "../components/QuillEditor";
+import { handleError } from "../utils/handle-error";
 import { isQuillBlank } from "../utils/is-quill-blank";
 
 const EditDish: Component = () => {
@@ -53,17 +54,21 @@ const EditDish: Component = () => {
     const name = formData.get("name") as string;
     const description = isQuillBlank(contents()) ? null : contents();
 
-    await DishResource.updateDish(dish.id, { name, description });
+    try {
+      await DishResource.updateDish(dish.id, { name, description });
 
-    const tagsPayload = selectedCategoryIds().map((c) => ({
-      dish_id: dish.id,
-      category_id: c,
-    }));
+      const tagsPayload = selectedCategoryIds().map((c) => ({
+        dish_id: dish.id,
+        category_id: c,
+      }));
 
-    await TagsResource.deleteDishTags(dish.id);
-    await TagsResource.addTags(tagsPayload);
+      await TagsResource.deleteDishTags(dish.id);
+      await TagsResource.addTags(tagsPayload);
 
-    navigate(`/dishes/${dish.id}`);
+      navigate(`/dishes/${dish.id}`);
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const onChange = (e: Event, id: number) => {

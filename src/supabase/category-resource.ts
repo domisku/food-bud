@@ -6,13 +6,14 @@ export class CategoryResource {
   static async addCategory(
     categories: Partial<ICategory>[]
   ): Promise<PostgrestSingleResponse<unknown>> {
-    return Supa.client.from("categories").insert(categories);
+    return Supa.client.from("categories").insert(categories).throwOnError();
   }
 
   static async getCategories(): Promise<ICategory[]> {
     const { data } = await Supa.client
       .from("categories")
-      .select<string, ICategory>("*");
+      .select<string, ICategory>("*")
+      .throwOnError();
 
     return data;
   }
@@ -21,7 +22,8 @@ export class CategoryResource {
     const { data } = await Supa.client
       .from("tags")
       .select("categories (name)")
-      .eq("dish_id", dishId);
+      .eq("dish_id", dishId)
+      .throwOnError();
 
     const categories: string[] = data.map((c: any) => c.categories.name);
 

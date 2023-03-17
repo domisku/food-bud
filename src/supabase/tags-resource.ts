@@ -4,14 +4,15 @@ import { Supa } from "./supabase";
 
 export class TagsResource {
   static async addTags(tags: ITag[]): Promise<PostgrestSingleResponse<null>> {
-    return Supa.client.from("tags").insert(tags);
+    return Supa.client.from("tags").insert(tags).throwOnError();
   }
 
   static async getDishCategoryIds(id: number): Promise<number[]> {
     const { data } = await Supa.client
       .from("tags")
       .select("category_id")
-      .eq("dish_id", id);
+      .eq("dish_id", id)
+      .throwOnError();
 
     const categoryIds = data.map((d) => d.category_id);
 
@@ -21,6 +22,10 @@ export class TagsResource {
   static async deleteDishTags(
     id: number
   ): Promise<PostgrestSingleResponse<null>> {
-    return await Supa.client.from("tags").delete().eq("dish_id", id);
+    return await Supa.client
+      .from("tags")
+      .delete()
+      .eq("dish_id", id)
+      .throwOnError();
   }
 }

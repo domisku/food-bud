@@ -9,6 +9,7 @@ import Tag from "../components/Tag";
 import { IDish } from "../models/dish.interface";
 import { CategoryResource } from "../supabase/category-resource";
 import { DishResource } from "../supabase/dish-resource";
+import { handleError } from "../utils/handle-error";
 
 const Dish: Component = () => {
   const params = useParams();
@@ -27,9 +28,13 @@ const Dish: Component = () => {
   });
 
   const onDelete = async () => {
-    await DishResource.deleteDish(dish().id);
+    try {
+      await DishResource.deleteDish(dish().id);
 
-    navigate("/");
+      navigate("/");
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (

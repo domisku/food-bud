@@ -12,7 +12,8 @@ export class DishResource {
     const { data } = await Supa.client
       .from("dishes")
       .insert([dish])
-      .select("id");
+      .select("id")
+      .throwOnError();
 
     const insertedDishId = data[0].id as number;
 
@@ -31,7 +32,8 @@ export class DishResource {
       .from("dishes")
       .select("*")
       .eq("id", id)
-      .single<IDish>();
+      .single<IDish>()
+      .throwOnError();
 
     return data;
   }
@@ -40,7 +42,8 @@ export class DishResource {
     const { data } = await Supa.client
       .from("dishes")
       .select<string, IDish>("id, name")
-      .order("id");
+      .order("id")
+      .throwOnError();
 
     return data;
   }
@@ -57,7 +60,8 @@ export class DishResource {
       WHERE tags.category_id IN (${filterIds});
       `,
       })
-      .order("id");
+      .order("id")
+      .throwOnError();
 
     return data;
   }
@@ -65,13 +69,21 @@ export class DishResource {
   static async deleteDish(id: number): Promise<PostgrestSingleResponse<null>> {
     await TagsResource.deleteDishTags(id);
 
-    return await Supa.client.from("dishes").delete().eq("id", id);
+    return await Supa.client
+      .from("dishes")
+      .delete()
+      .eq("id", id)
+      .throwOnError();
   }
 
   static async updateDish(
     id: number,
     dish: Partial<IDish>
   ): Promise<PostgrestSingleResponse<null>> {
-    return await Supa.client.from("dishes").update(dish).eq("id", id);
+    return await Supa.client
+      .from("dishes")
+      .update(dish)
+      .eq("id", id)
+      .throwOnError();
   }
 }

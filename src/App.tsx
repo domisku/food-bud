@@ -1,5 +1,6 @@
 import { Route, Routes } from "@solidjs/router";
 import { Component } from "solid-js";
+import { Toaster } from "solid-toast";
 import AddCategory from "./pages/AddCategory";
 import AddDish from "./pages/AddDish";
 import Dish from "./pages/Dish";
@@ -20,6 +21,7 @@ const App: Component = () => {
           <Route path="/dishes/edit/:id" element={<EditDish />} />
         </Routes>
       </div>
+      <Toaster position="top-center"></Toaster>
     </main>
   );
 };

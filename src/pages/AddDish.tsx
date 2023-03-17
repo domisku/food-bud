@@ -11,6 +11,7 @@ import { ICategory } from "../models/category.interface";
 import { CategoryResource } from "../supabase/category-resource";
 import { DishResource } from "../supabase/dish-resource";
 import { checkAuth } from "../utils/check-auth";
+import { handleError } from "../utils/handle-error";
 import { isQuillBlank } from "../utils/is-quill-blank";
 
 const AddDish: Component = () => {
@@ -40,12 +41,16 @@ const AddDish: Component = () => {
     const name = formData.get("name") as string;
     const description = isQuillBlank(contents()) ? null : contents();
 
-    const id = await DishResource.addDish(
-      { name, description },
-      selectedCategoryIds
-    );
+    try {
+      const id = await DishResource.addDish(
+        { name, description },
+        selectedCategoryIds
+      );
 
-    navigate(`/dishes/${id}`);
+      navigate(`/dishes/${id}`);
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const onChange = (e: Event, category: ICategory) => {

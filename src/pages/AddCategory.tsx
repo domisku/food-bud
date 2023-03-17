@@ -6,6 +6,7 @@ import Heading from "../components/Heading";
 import TextInput from "../components/TextInput";
 import { CategoryResource } from "../supabase/category-resource";
 import { checkAuth } from "../utils/check-auth";
+import { handleError } from "../utils/handle-error";
 
 const AddCategory: Component = () => {
   checkAuth();
@@ -19,9 +20,13 @@ const AddCategory: Component = () => {
     const formData = new FormData(target);
     const name = formData.get("name") as string;
 
-    await CategoryResource.addCategory([{ name }]);
+    try {
+      await CategoryResource.addCategory([{ name }]);
 
-    navigate("/");
+      navigate("/");
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
