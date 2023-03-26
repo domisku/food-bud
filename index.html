@@ -22,7 +22,7 @@
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
           .register("/assets/sw.js", {
-            scope: "/",
+            scope: "/assets/",
           })
           .catch((error) => {
             console.error(`Service worker registration failed with ${error}`);
