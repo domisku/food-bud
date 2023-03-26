@@ -7,6 +7,7 @@ import {
   onMount,
   Show,
 } from "solid-js";
+import toast from "solid-toast";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import Heading from "../components/Heading";
@@ -64,9 +65,62 @@ const Home: Component = () => {
     setChecked({});
   };
 
+  const showRandomDishes = (count = 5) => {
+    const dishesCount = dishes().length;
+
+    const randomDishIndices = [];
+
+    for (let i = 0; i < count; i++) {
+      const num = rollForRandomNumber(dishesCount);
+
+      if (randomDishIndices.includes(num)) {
+        i--;
+        continue;
+      }
+
+      randomDishIndices.push(num);
+    }
+
+    const dishNames = randomDishIndices.map((id) => dishes()[id].name);
+
+    toast.custom(
+      () => {
+        return (
+          <div class="bg-white rounded-lg shadow-lg p-4">
+            <div class="flex flex-col gap-2">
+              <p class="text-lg font-semibold">Atsitiktiniai patiekalai</p>
+              <For each={dishNames}>{(dishName) => <p>{dishName}</p>}</For>
+              <Button variant="text" onClick={() => toast.dismiss()}>
+                Uždaryti
+              </Button>
+            </div>
+          </div>
+        );
+      },
+      { duration: Infinity, unmountDelay: 0 }
+    );
+  };
+
+  const rollForRandomNumber = (max: number): number => {
+    return Math.floor(Math.random() * max);
+  };
+
   return (
     <>
-      <Heading>Patiekalai</Heading>
+      <div class="flex justify-between">
+        <Heading>Patiekalai</Heading>
+        <button
+          class="h-min"
+          onClick={() => showRandomDishes()}
+          aria-label="Show random dishes"
+        >
+          <img
+            class="h-8 w-8 transform hover:rotate-180 transition-transform"
+            src="/assets/dice.svg"
+            alt=""
+          />
+        </button>
+      </div>
       <Selector
         placeholder="Filtruoti pagal kategoriją"
         onClearAll={onClearAll}

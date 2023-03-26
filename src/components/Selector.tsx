@@ -1,4 +1,4 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, onCleanup } from "solid-js";
 
 interface ISelectorProps {
   children?: any;
@@ -14,7 +14,7 @@ const Selector: Component<ISelectorProps> = (props) => {
     setIsOpen((isOpen) => !isOpen);
   };
 
-  document.addEventListener("click", (e: MouseEvent) => {
+  const onOutsideClick = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
 
     const selector = target.closest(".selector");
@@ -22,6 +22,20 @@ const Selector: Component<ISelectorProps> = (props) => {
     if (!selector && isOpen() === true) {
       setIsOpen(false);
     }
+  };
+
+  const onEscape = (e: KeyboardEvent) => {
+    if (e.key === "Escape" && isOpen() === true) {
+      setIsOpen(false);
+    }
+  };
+
+  document.addEventListener("click", onOutsideClick);
+  document.addEventListener("keyup", onEscape);
+
+  onCleanup(() => {
+    document.removeEventListener("click", onOutsideClick);
+    document.removeEventListener("keyup", onEscape);
   });
 
   return (
