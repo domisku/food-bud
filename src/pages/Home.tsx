@@ -136,7 +136,7 @@ const Home: Component = () => {
           )}
         </For>
       </Selector>
-      <div class="h-100 overflow-y-auto mt-4 mb-8">
+      <div class="h-80 overflow-y-auto mt-4 mb-8">
         <Show when={!!dishes()} fallback={<Spinner />}>
           <For each={dishes()}>
             {(dish) => (
