@@ -2,7 +2,7 @@
   "theme_color": "#9333ea",
   "background_color": "#f4c45c",
   "display": "standalone",
-  "scope": "/assets/",
+  "scope": "/",
   "start_url": "/",
   "name": "Food Bud",
   "short_name": "Food Bud",
