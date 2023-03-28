@@ -25,6 +25,9 @@ main {
   flex: 1;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  height: 100%;
+  padding: 1rem;
 }
 
 .ql-toolbar ~ .ql-container {
@@ -35,6 +38,7 @@ main {
   border: none !important;
   background-color: rgba(245, 243, 255);
   border-radius: 0.375rem;
+  height: revert;
 }
 
 .ql-editor {
