@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: cURL request
-        run: curl -H "Apikey: ${{ secrets.SUPABASE_API_KEY }}" ${{ secrets.PING_ENDPOINT_URL }}
+        run: 'curl -H "Apikey: ${{ secrets.SUPABASE_API_KEY }}" ${{ secrets.PING_ENDPOINT_URL }}'
