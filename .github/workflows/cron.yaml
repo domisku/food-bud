@@ -1,0 +1,13 @@
+name: Server ping
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  ping:
+    name: Ping server to wake it up
+    runs-on: ubuntu-latest
+    steps:
+      - name: cURL request
+        run: curl -H "Apikey: ${{ secrets.SUPABASE_API_KEY }}" ${{ secrets.PING_ENDPOINT_URL }}
