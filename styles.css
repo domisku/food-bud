@@ -27,7 +27,6 @@ main {
   align-items: center;
   flex-direction: column;
   height: 100%;
-  padding: 1rem;
 }
 
 .ql-toolbar ~ .ql-container {
