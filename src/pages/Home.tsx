@@ -97,7 +97,7 @@ const Home: Component = () => {
           </div>
         );
       },
-      { duration: Infinity, unmountDelay: 0 }
+      { duration: Infinity, unmountDelay: 0 },
     );
   };
 
