@@ -35,7 +35,7 @@ const QuillEditor: Component<IQuillEditorProps> = (props) => {
             { list: "bullet" },
           ],
         },
-      })
+      }),
     );
 
     quill().on("text-change", onTextChange);

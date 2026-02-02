@@ -15,8 +15,8 @@ import Selector from "../components/Selector";
 import Spinner from "../components/Spinner";
 import { ICategory } from "../models/category.interface";
 import { IDish } from "../models/dish.interface";
-import { CategoryResource } from "../supabase/category-resource";
-import { DishResource } from "../supabase/dish-resource";
+import { CategoryResource } from "../resources/category-resource";
+import { DishResource } from "../resources/dish-resource";
 import { checkAuth } from "../utils/check-auth";
 
 const Home: Component = () => {
@@ -67,10 +67,11 @@ const Home: Component = () => {
 
   const showRandomDishes = (count = 5) => {
     const dishesCount = dishes().length;
+    const actualCount = Math.min(count, dishesCount);
 
     const randomDishIndices = [];
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < actualCount; i++) {
       const num = rollForRandomNumber(dishesCount);
 
       if (randomDishIndices.includes(num)) {

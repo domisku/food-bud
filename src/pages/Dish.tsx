@@ -7,8 +7,8 @@ import QuillReadonly from "../components/QuillReadonly";
 import Spinner from "../components/Spinner";
 import Tag from "../components/Tag";
 import { IDish } from "../models/dish.interface";
-import { CategoryResource } from "../supabase/category-resource";
-import { DishResource } from "../supabase/dish-resource";
+import { CategoryResource } from "../resources/category-resource";
+import { DishResource } from "../resources/dish-resource";
 import { handleError } from "../utils/handle-error";
 
 const Dish: Component = () => {

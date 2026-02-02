@@ -8,8 +8,8 @@ import QuillEditor from "../components/QuillEditor";
 import Selector from "../components/Selector";
 import TextInput from "../components/TextInput";
 import { ICategory } from "../models/category.interface";
-import { CategoryResource } from "../supabase/category-resource";
-import { DishResource } from "../supabase/dish-resource";
+import { CategoryResource } from "../resources/category-resource";
+import { DishResource } from "../resources/dish-resource";
 import { checkAuth } from "../utils/check-auth";
 import { handleError } from "../utils/handle-error";
 import { isQuillBlank } from "../utils/is-quill-blank";
@@ -20,10 +20,10 @@ const AddDish: Component = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = createSignal<ICategory[]>(null);
   const [selectedCategories, setSelectedCategories] = createSignal<ICategory[]>(
-    []
+    [],
   );
   const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
-  const [contents, setContents] = createSignal<string>(null);
+  const [contents, setContents] = createSignal<object>(null);
 
   onMount(async () => {
     const data = await CategoryResource.getCategories();
@@ -43,8 +43,8 @@ const AddDish: Component = () => {
 
     try {
       const id = await DishResource.addDish(
-        { name, description },
-        selectedCategoryIds
+        { name, description: JSON.stringify(description) },
+        selectedCategoryIds,
       );
 
       navigate(`/dishes/${id}`);
@@ -65,7 +65,7 @@ const AddDish: Component = () => {
     }
 
     setSelectedCategories((currCategories) =>
-      currCategories.filter((c) => c.id !== category.id)
+      currCategories.filter((c) => c.id !== category.id),
     );
     setChecked((c) => ({ ...c, ...{ [category.id]: false } }));
   };
@@ -75,7 +75,7 @@ const AddDish: Component = () => {
     setChecked({});
   };
 
-  const onContentsChange = (contents: string) => {
+  const onContentsChange = (contents: object) => {
     setContents(contents);
   };
 

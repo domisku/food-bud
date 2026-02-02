@@ -4,7 +4,7 @@ import Backlink from "../components/Backlink";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import TextInput from "../components/TextInput";
-import { CategoryResource } from "../supabase/category-resource";
+import { CategoryResource } from "../resources/category-resource";
 import { checkAuth } from "../utils/check-auth";
 import { handleError } from "../utils/handle-error";
 

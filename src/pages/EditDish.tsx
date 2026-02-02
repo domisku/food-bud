@@ -8,9 +8,9 @@ import Selector from "../components/Selector";
 import TextInput from "../components/TextInput";
 import { ICategory } from "../models/category.interface";
 import { IDish } from "../models/dish.interface";
-import { CategoryResource } from "../supabase/category-resource";
-import { DishResource } from "../supabase/dish-resource";
-import { TagsResource } from "../supabase/tags-resource";
+import { CategoryResource } from "../resources/category-resource";
+import { DishResource } from "../resources/dish-resource";
+import { TagsResource } from "../resources/tags-resource";
 
 import QuillEditor from "../components/QuillEditor";
 import { handleError } from "../utils/handle-error";
@@ -21,10 +21,10 @@ const EditDish: Component = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = createSignal<ICategory[]>([]);
   const [selectedCategoryIds, setSelectedCategoryIds] = createSignal<number[]>(
-    []
+    [],
   );
   const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
-  const [contents, setContents] = createSignal<string>("");
+  const [contents, setContents] = createSignal<object>(null);
 
   const dish = location.state as IDish;
 
@@ -35,7 +35,7 @@ const EditDish: Component = () => {
 
     const checked = categoryIds.reduce(
       (prev, cur) => ({ ...prev, [cur]: true }),
-      {}
+      {},
     );
 
     setChecked(checked);
@@ -55,7 +55,10 @@ const EditDish: Component = () => {
     const description = isQuillBlank(contents()) ? null : contents();
 
     try {
-      await DishResource.updateDish(dish.id, { name, description });
+      await DishResource.updateDish(dish.id, {
+        name,
+        description: JSON.stringify(description),
+      });
 
       const tagsPayload = selectedCategoryIds().map((c) => ({
         dish_id: dish.id,
@@ -90,7 +93,7 @@ const EditDish: Component = () => {
     setChecked({});
   };
 
-  const onContentsChange = (contents: string) => {
+  const onContentsChange = (contents: object) => {
     setContents(contents);
   };
 

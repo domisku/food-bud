@@ -4,7 +4,7 @@ import toast from "solid-toast";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import TextInput from "../components/TextInput";
-import { AuthResource } from "../supabase/auth-resource";
+import { AuthResource } from "../resources/auth-resource";
 
 const Login: Component = () => {
   const navigate = useNavigate();
