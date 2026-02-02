@@ -1,4 +1,4 @@
 export interface ITag {
-  dish_id: number;
-  category_id: number;
+  dishId: string;
+  categoryId: string;
 }
