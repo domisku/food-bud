@@ -47,7 +47,7 @@ const Dish: Component = () => {
   };
 
   return (
-    <Show when={!!dish()} fallback={<Spinner class="min-h-48" />}>
+    <Show when={!!dish()}>
       <Backlink class="mb-6">Grįžti</Backlink>
       <Heading>{dish().name}</Heading>
       <Show when={dish().description}>
