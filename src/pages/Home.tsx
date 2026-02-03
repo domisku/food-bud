@@ -148,7 +148,7 @@ const Home: Component = () => {
                   animation: `fadeInUp 0.3s ease-out ${index() * 0.05}s backwards`,
                 }}
               >
-                <div class="hover:bg-gray-50 py-2 px-2 border-b transition-all duration-200 hover:translate-x-1">
+                <div class="bg-white hover:bg-violet-50 px-4 mb-2 transition-all duration-200 hover:translate-x-1 rounded-md cursor-pointer border border-gray-200 flex items-center" style="height: 42px;">
                   {dish.name}
                 </div>
               </Link>
