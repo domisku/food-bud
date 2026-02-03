@@ -140,12 +140,15 @@ const Home: Component = () => {
       <div class="overflow-y-auto mt-4 mb-8 max-h-110 min-h-48">
         <Show when={!!dishes()} fallback={<Spinner />}>
           <For each={dishes()}>
-            {(dish) => (
+            {(dish, index) => (
               <Link
-                class=" text-black no-underline"
+                class="text-black no-underline"
                 href={`/dishes/${dish.id}`}
+                style={{
+                  animation: `fadeInUp 0.3s ease-out ${index() * 0.05}s backwards`,
+                }}
               >
-                <div class="hover:bg-gray-50 py-2 px-2 border-b">
+                <div class="hover:bg-gray-50 py-2 px-2 border-b transition-all duration-200 hover:translate-x-1">
                   {dish.name}
                 </div>
               </Link>

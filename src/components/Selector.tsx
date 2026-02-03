@@ -57,7 +57,7 @@ const Selector: Component<ISelectorProps> = (props) => {
       <div
         class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute ${
           props.openUp ? "bottom-10" : "top-10"
-        } bg-white px-5 py-2 w-full h-max-80 rounded-md overflow-y-auto border shadow-sm`}
+        } bg-white px-5 py-2 w-full h-max-80 rounded-md overflow-y-auto border shadow-sm z-50`}
       >
         <button
           type="button"
