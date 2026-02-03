@@ -22,7 +22,9 @@ const QuillReadonly: Component<IQuillReadonlyProps> = (props) => {
     quill().setContents(JSON.parse(props.contents));
   });
 
-  return <div class="quill-readonly mb-4 max-h-100 overflow-y-auto"></div>;
+  return (
+    <div class="quill-readonly mb-4 max-h-100 min-h-48 overflow-y-auto"></div>
+  );
 };
 
 export default QuillReadonly;

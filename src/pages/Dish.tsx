@@ -16,6 +16,7 @@ const Dish: Component = () => {
   const navigate = useNavigate();
   const [dish, setDish] = createSignal<IDish>();
   const [categories, setCategories] = createSignal<string[]>([]);
+  let dialogRef: HTMLDialogElement;
 
   onMount(async () => {
     const dishId = params.id;
@@ -27,10 +28,18 @@ const Dish: Component = () => {
     setCategories(categoryNames);
   });
 
+  const openDeleteDialog = () => {
+    dialogRef?.showModal();
+  };
+
+  const closeDeleteDialog = () => {
+    dialogRef?.close();
+  };
+
   const onDelete = async () => {
     try {
       await DishResource.deleteDish(dish().id);
-
+      closeDeleteDialog();
       navigate("/");
     } catch (error) {
       handleError(error);
@@ -48,8 +57,8 @@ const Dish: Component = () => {
         <For each={categories()}>{(category) => <Tag>{category}</Tag>}</For>
       </div>
 
-      <div class="flex flex-col gap-4">
-        <Button type="button" onClick={onDelete} variant="secondary">
+      <div class="flex gap-4">
+        <Button type="button" onClick={openDeleteDialog} variant="secondary" class="flex-1">
           Trinti
         </Button>
         <Button
@@ -57,10 +66,40 @@ const Dish: Component = () => {
           onClick={() =>
             navigate(`/dishes/edit/${dish().id}`, { state: dish() })
           }
+          class="flex-1"
         >
           Redaguoti
         </Button>
       </div>
+
+      <dialog
+        ref={dialogRef}
+        class="p-6 rounded-lg shadow-xl backdrop:bg-black backdrop:opacity-50 max-w-md"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold">Patvirtinti trynimą</h2>
+          <button
+            type="button"
+            onClick={closeDeleteDialog}
+            class="text-gray-500 hover:text-gray-700 text-3xl leading-none p-2 -m-2 self-start"
+            aria-label="Uždaryti"
+          >
+            ×
+          </button>
+        </div>
+        <p class="mb-6">
+          Ar tikrai norite ištrinti patiekalą "{dish().name}"? Šio veiksmo
+          negalima bus atšaukti.
+        </p>
+        <div class="flex gap-4 w-full">
+          <Button type="button" onClick={closeDeleteDialog} variant="secondary" class="flex-1">
+            Atšaukti
+          </Button>
+          <Button type="button" onClick={onDelete} class="flex-1">
+            Trinti
+          </Button>
+        </div>
+      </dialog>
     </Show>
   );
 };

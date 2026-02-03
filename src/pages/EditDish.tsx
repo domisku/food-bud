@@ -20,10 +20,10 @@ const EditDish: Component = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [categories, setCategories] = createSignal<ICategory[]>([]);
-  const [selectedCategoryIds, setSelectedCategoryIds] = createSignal<number[]>(
+  const [selectedCategoryIds, setSelectedCategoryIds] = createSignal<string[]>(
     [],
   );
-  const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
+  const [checked, setChecked] = createSignal<{ [key: string]: boolean }>({});
   const [contents, setContents] = createSignal<object>(null);
 
   const dish = location.state as IDish;
@@ -61,8 +61,8 @@ const EditDish: Component = () => {
       });
 
       const tagsPayload = selectedCategoryIds().map((c) => ({
-        dish_id: dish.id,
-        category_id: c,
+        dishId: dish.id,
+        categoryId: c,
       }));
 
       await TagsResource.deleteDishTags(dish.id);
@@ -74,7 +74,7 @@ const EditDish: Component = () => {
     }
   };
 
-  const onChange = (e: Event, id: number) => {
+  const onChange = (e: Event, id: string) => {
     const target = e.target as HTMLInputElement;
     const isChecked = target.checked;
 

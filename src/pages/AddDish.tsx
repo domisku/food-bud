@@ -22,7 +22,7 @@ const AddDish: Component = () => {
   const [selectedCategories, setSelectedCategories] = createSignal<ICategory[]>(
     [],
   );
-  const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
+  const [checked, setChecked] = createSignal<{ [key: string]: boolean }>({});
   const [contents, setContents] = createSignal<object>(null);
 
   onMount(async () => {

@@ -137,7 +137,7 @@ const Home: Component = () => {
           )}
         </For>
       </Selector>
-      <div class="overflow-y-auto mt-4 mb-8 max-h-110">
+      <div class="overflow-y-auto mt-4 mb-8 max-h-110 min-h-48">
         <Show when={!!dishes()} fallback={<Spinner />}>
           <For each={dishes()}>
             {(dish) => (
@@ -154,11 +154,11 @@ const Home: Component = () => {
         </Show>
         {dishes()?.length === 0 && <p>Patiekalų nerasta</p>}
       </div>
-      <div class="flex flex-col gap-4">
-        <Button onClick={() => navigate("/add-category")} variant="secondary">
+      <div class="flex gap-4">
+        <Button onClick={() => navigate("/add-category")} variant="secondary" class="flex-1">
           Pridėti kategoriją
         </Button>
-        <Button onClick={() => navigate("/add-dish")}>Pridėti patiekalą</Button>
+        <Button onClick={() => navigate("/add-dish")} class="flex-1">Pridėti patiekalą</Button>
       </div>
     </>
   );
