@@ -43,6 +43,8 @@ main {
 .ql-editor {
   font-family: "Quicksand", sans-serif !important;
   font-size: 1rem;
+  min-height: 12rem;
+  cursor: text;
 }
 
 .ql-blank::before {
@@ -75,4 +77,9 @@ button.ql-active {
 
 .ql-formats button {
   margin-right: 0.125rem;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
 }

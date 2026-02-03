@@ -155,10 +155,16 @@ const Home: Component = () => {
         {dishes()?.length === 0 && <p>Patiekalų nerasta</p>}
       </div>
       <div class="flex gap-4">
-        <Button onClick={() => navigate("/add-category")} variant="secondary" class="flex-1">
+        <Button
+          onClick={() => navigate("/add-category")}
+          variant="secondary"
+          class="flex-1"
+        >
           Pridėti kategoriją
         </Button>
-        <Button onClick={() => navigate("/add-dish")} class="flex-1">Pridėti patiekalą</Button>
+        <Button onClick={() => navigate("/add-dish")} class="flex-1">
+          Pridėti patiekalą
+        </Button>
       </div>
     </>
   );

@@ -58,7 +58,12 @@ const Dish: Component = () => {
       </div>
 
       <div class="flex gap-4">
-        <Button type="button" onClick={openDeleteDialog} variant="secondary" class="flex-1">
+        <Button
+          type="button"
+          onClick={openDeleteDialog}
+          variant="secondary"
+          class="flex-1"
+        >
           Trinti
         </Button>
         <Button
@@ -74,7 +79,7 @@ const Dish: Component = () => {
 
       <dialog
         ref={dialogRef}
-        class="p-6 rounded-lg shadow-xl backdrop:bg-black backdrop:opacity-50 max-w-md"
+        class="p-6 rounded-lg shadow-xl backdrop:bg-black backdrop:opacity-50 backdrop:backdrop-blur-sm max-w-md"
       >
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">Patvirtinti trynimą</h2>
@@ -92,7 +97,12 @@ const Dish: Component = () => {
           negalima bus atšaukti.
         </p>
         <div class="flex gap-4 w-full">
-          <Button type="button" onClick={closeDeleteDialog} variant="secondary" class="flex-1">
+          <Button
+            type="button"
+            onClick={closeDeleteDialog}
+            variant="secondary"
+            class="flex-1"
+          >
             Atšaukti
           </Button>
           <Button type="button" onClick={onDelete} class="flex-1">
