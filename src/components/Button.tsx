@@ -6,6 +6,7 @@ interface IButtonProps {
   type?: "submit" | "reset" | "button";
   variant?: "primary" | "secondary" | "text";
   class?: string;
+  disabled?: boolean;
 }
 
 const Button: Component<IButtonProps> = (props) => {
@@ -24,9 +25,10 @@ const Button: Component<IButtonProps> = (props) => {
 
   return (
     <button
-      class={`rounded-md px-2 font-bold ${getButtonClasses()} ${props.class}`}
+      class={`rounded-md px-2 font-bold ${getButtonClasses()} ${props.class} ${props.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       type={props.type ?? "submit"}
       onClick={props.onClick}
+      disabled={props.disabled}
     >
       {props.children}
     </button>
