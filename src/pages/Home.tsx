@@ -128,21 +128,12 @@ const Home: Component = () => {
       >
         <For each={categories()}>
           {(category) => (
-            <div class="flex items-center justify-between gap-2 py-1">
-              <Checkbox
-                onChange={(e: any) => onChange(e, category.id)}
-                checked={checked()[category.id]}
-              >
-                {category.name}
-              </Checkbox>
-              <Link
-                href={`/categories/${category.id}`}
-                class="text-violet-600 hover:text-violet-700 text-sm px-2"
-                onClick={(e: MouseEvent) => e.stopPropagation()}
-              >
-                Valdyti
-              </Link>
-            </div>
+            <Checkbox
+              onChange={(e: any) => onChange(e, category.id)}
+              checked={checked()[category.id]}
+            >
+              {category.name}
+            </Checkbox>
           )}
         </For>
       </Selector>
@@ -168,11 +159,11 @@ const Home: Component = () => {
       </div>
       <div class="flex gap-4">
         <Button
-          onClick={() => navigate("/add-category")}
+          onClick={() => navigate("/categories")}
           variant="secondary"
           class="flex-1"
         >
-          Pridėti kategoriją
+          Valdyti kategorijas
         </Button>
         <Button onClick={() => navigate("/add-dish")} class="flex-1">
           Pridėti patiekalą
