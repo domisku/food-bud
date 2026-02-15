@@ -128,12 +128,21 @@ const Home: Component = () => {
       >
         <For each={categories()}>
           {(category) => (
-            <Checkbox
-              onChange={(e: any) => onChange(e, category.id)}
-              checked={checked()[category.id]}
-            >
-              {category.name}
-            </Checkbox>
+            <div class="flex items-center justify-between gap-2 py-1">
+              <Checkbox
+                onChange={(e: any) => onChange(e, category.id)}
+                checked={checked()[category.id]}
+              >
+                {category.name}
+              </Checkbox>
+              <Link
+                href={`/categories/${category.id}`}
+                class="text-violet-600 hover:text-violet-700 text-sm px-2"
+                onClick={(e: MouseEvent) => e.stopPropagation()}
+              >
+                Valdyti
+              </Link>
+            </div>
           )}
         </For>
       </Selector>

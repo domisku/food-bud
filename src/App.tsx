@@ -3,6 +3,7 @@ import { Component } from "solid-js";
 import { Toaster } from "solid-toast";
 import AddCategory from "./pages/AddCategory";
 import AddDish from "./pages/AddDish";
+import Category from "./pages/Category";
 import Dish from "./pages/Dish";
 import EditDish from "./pages/EditDish";
 import Home from "./pages/Home";
@@ -17,6 +18,7 @@ const App: Component = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/add-dish" element={<AddDish />} />
           <Route path="/add-category" element={<AddCategory />} />
+          <Route path="/categories/:id" element={<Category />} />
           <Route path="/dishes/:id" element={<Dish />} />
           <Route path="/dishes/edit/:id" element={<EditDish />} />
         </Routes>
