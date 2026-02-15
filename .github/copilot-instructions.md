@@ -4,15 +4,17 @@
 Food Bud is a Progressive Web Application (PWA) for managing recipes and dishes. Users can create, categorize, filter, and browse dishes with a simple and intuitive interface.
 
 ## Tech Stack
-- **Framework**: SolidJS 1.9.10
+- **Framework**: SolidJS
 - **Language**: TypeScript
-- **Build Tool**: Vite 4.1.1
-- **Routing**: @solidjs/router 0.8.3
+- **Build Tool**: Vite
+- **Routing**: @solidjs/router
 - **Styling**: WindiCSS (via vite-plugin-windicss)
 - **Backend**: Firebase (Firestore for database, Firebase Auth for authentication)
 - **UI Components**: Custom components with Quill editor for rich text
-- **Notifications**: solid-toast 0.5.0
+- **Notifications**: solid-toast
 - **Package Manager**: pnpm (can also use npm or yarn)
+
+*Note: Check `package.json` for current dependency versions.*
 
 ## Project Structure
 ```
@@ -35,7 +37,9 @@ Food Bud is a Progressive Web Application (PWA) for managing recipes and dishes.
 - Export interfaces with `I` prefix (e.g., `IDish`, `ICategory`)
 
 ### Components
-- Use SolidJS functional components with typed Component type: `const MyComponent: Component = () => { ... }`
+- Use SolidJS functional components with typed Component type imported from 'solid-js'
+- Example: `import { Component } from 'solid-js';` then `const MyComponent: Component = () => { ... }`
+- For components with props, use: `const MyComponent: Component<Props> = (props) => { ... }`
 - Place reusable components in `/src/components`
 - Place page components in `/src/pages`
 - Use PascalCase for component file names (e.g., `AddDish.tsx`, `Button.tsx`)
