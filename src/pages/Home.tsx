@@ -32,7 +32,6 @@ const Home: Component = () => {
   onMount(async () => {
     const categories = await CategoryResource.getCategories();
     setCategories(categories);
-    setPendingFilters(filters());
   });
 
   createEffect(async () => {
