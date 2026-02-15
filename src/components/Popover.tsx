@@ -1,4 +1,4 @@
-import { Component, createSignal, onCleanup } from "solid-js";
+import { Component, createSignal, onCleanup, onMount } from "solid-js";
 
 interface IPopoverProps {
   children?: any;
@@ -30,8 +30,10 @@ const Popover: Component<IPopoverProps> = (props) => {
     }
   };
 
-  document.addEventListener("click", onOutsideClick);
-  document.addEventListener("keyup", onEscape);
+  onMount(() => {
+    document.addEventListener("click", onOutsideClick);
+    document.addEventListener("keyup", onEscape);
+  });
 
   onCleanup(() => {
     document.removeEventListener("click", onOutsideClick);
