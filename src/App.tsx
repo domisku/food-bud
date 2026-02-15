@@ -6,6 +6,7 @@ import AddDish from "./pages/AddDish";
 import Categories from "./pages/Categories";
 import Category from "./pages/Category";
 import Dish from "./pages/Dish";
+import EditCategory from "./pages/EditCategory";
 import EditDish from "./pages/EditDish";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -21,6 +22,7 @@ const App: Component = () => {
           <Route path="/add-category" element={<AddCategory />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/:id" element={<Category />} />
+          <Route path="/categories/edit/:id" element={<EditCategory />} />
           <Route path="/dishes/:id" element={<Dish />} />
           <Route path="/dishes/edit/:id" element={<EditDish />} />
         </Routes>
