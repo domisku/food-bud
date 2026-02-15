@@ -14,7 +14,8 @@ const Categories: Component = () => {
   checkAuth();
 
   const navigate = useNavigate();
-  const [categories, setCategories] = createSignal<ICategory[]>(null);
+  const [categories, setCategories] = createSignal<ICategory[]>([]);
+  const [loading, setLoading] = createSignal(true);
   const [categoryToDelete, setCategoryToDelete] = createSignal<ICategory | null>(null);
   let dialogRef: HTMLDialogElement | undefined;
 
@@ -24,10 +25,13 @@ const Categories: Component = () => {
 
   const loadCategories = async () => {
     try {
+      setLoading(true);
       const data = await CategoryResource.getCategories();
       setCategories(data);
     } catch (error) {
       handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,7 +65,7 @@ const Categories: Component = () => {
       <Heading>Kategorijos</Heading>
 
       <div class="overflow-y-auto mt-4 mb-8 max-h-110 min-h-48">
-        <Show when={!!categories()} fallback={<Spinner class="min-h-48" />}>
+        <Show when={!loading()} fallback={<Spinner class="min-h-48" />}>
           <For each={categories()}>
             {(category, index) => (
               <div
@@ -83,8 +87,8 @@ const Categories: Component = () => {
               </div>
             )}
           </For>
+          {categories().length === 0 && <p>Kategorijų nerasta</p>}
         </Show>
-        {categories()?.length === 0 && <p>Kategorijų nerasta</p>}
       </div>
 
       <div class="flex gap-4">
