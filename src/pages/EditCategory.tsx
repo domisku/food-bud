@@ -49,7 +49,7 @@ const EditCategory: Component = () => {
 
   return (
     <Show when={!!category()} fallback={<Spinner />}>
-      <Backlink class="mb-6">Grįžti</Backlink>
+      <Backlink class="mb-6" href="/categories">Grįžti</Backlink>
       <Heading>Redaguoti kategoriją</Heading>
       <form onSubmit={onSubmit} class="flex flex-col">
         <label for="name">Pavadinimas</label>
