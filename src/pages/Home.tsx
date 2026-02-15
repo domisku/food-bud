@@ -24,8 +24,8 @@ const Home: Component = () => {
 
   const [dishes, setDishes] = createSignal<IDish[]>(null);
   const [categories, setCategories] = createSignal<ICategory[]>(null);
-  const [filters, setFilters] = createSignal<number[]>([]);
-  const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
+  const [filters, setFilters] = createSignal<string[]>([]);
+  const [checked, setChecked] = createSignal<{ [key: string]: boolean }>({});
   const navigate = useNavigate();
 
   onMount(async () => {
@@ -46,7 +46,7 @@ const Home: Component = () => {
     setDishes(dishes);
   });
 
-  const onChange = (e: Event, id: number) => {
+  const onChange = (e: Event, id: string) => {
     const target = e.target as HTMLInputElement;
     const isChecked = target.checked;
 
