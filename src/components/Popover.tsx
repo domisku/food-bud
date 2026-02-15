@@ -61,11 +61,11 @@ const Popover: Component<IPopoverProps> = (props) => {
       <div
         class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute right-0 top-12 bg-white w-72 max-h-96 rounded-md overflow-y-auto border shadow-lg z-50`}
       >
-        <div class="sticky top-0 bg-white flex justify-between items-center px-5 py-3 pb-2 border-b z-10">
+        <div class="sticky top-0 bg-white flex justify-between items-center gap-4 px-5 py-3 pb-2 border-b z-10">
           <span class="font-semibold text-lg">{props.title ?? "Filter"}</span>
           <button
             type="button"
-            class="p-1 hover:bg-gray-100 rounded transition-colors"
+            class="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
             onClick={closePopover}
             aria-label="Close"
           >

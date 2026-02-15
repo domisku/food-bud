@@ -67,7 +67,6 @@ const Home: Component = () => {
 
   const onClearAll = () => {
     setPendingFilters([]);
-    setFilters([]);
     setChecked({});
   };
 
