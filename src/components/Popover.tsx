@@ -59,32 +59,34 @@ const Popover: Component<IPopoverProps> = (props) => {
         {props.trigger}
       </button>
       <div
-        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute right-0 top-12 bg-white px-5 py-3 w-72 max-h-96 rounded-md overflow-y-auto border shadow-lg z-50`}
+        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute right-0 top-12 bg-white w-72 max-h-96 rounded-md overflow-y-auto border shadow-lg z-50`}
       >
-        <div class="flex justify-between items-center mb-2 pb-2 border-b">
+        <div class="sticky top-0 bg-white flex justify-between items-center px-5 py-3 pb-2 border-b z-10">
           <span class="font-semibold text-lg">{props.title ?? "Filter"}</span>
-          <div class="flex gap-2 items-center">
-            <button
-              type="button"
-              class="text-sm text-violet-600 hover:text-violet-700 font-bold"
-              onClick={props.onClearAll}
-            >
-              Išvalyti visus
-            </button>
-            <button
-              type="button"
-              class="p-1 hover:bg-gray-100 rounded transition-colors"
-              onClick={closePopover}
-              aria-label="Close"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
+          <button
+            type="button"
+            class="p-1 hover:bg-gray-100 rounded transition-colors"
+            onClick={closePopover}
+            aria-label="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
-        {props.children}
+        <div class="px-5 py-3">
+          {props.children}
+        </div>
+        <div class="sticky bottom-0 bg-white px-5 py-3 pt-2 border-t">
+          <button
+            type="button"
+            class="w-full text-sm text-violet-600 hover:text-violet-700 font-bold py-2"
+            onClick={props.onClearAll}
+          >
+            Išvalyti visus
+          </button>
+        </div>
       </div>
     </div>
   );
