@@ -31,7 +31,7 @@ const AddCategory: Component = () => {
 
   return (
     <div>
-      <Backlink class="mb-6">Grįžti</Backlink>
+      <Backlink class="mb-6" href="/categories">Grįžti</Backlink>
       <Heading>Nauja kategorija</Heading>
       <form onSubmit={onSubmit} class="flex flex-col">
         <label for="name">Pavadinimas</label>
