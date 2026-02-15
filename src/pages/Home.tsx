@@ -11,7 +11,7 @@ import toast from "solid-toast";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
 import Heading from "../components/Heading";
-import Selector from "../components/Selector";
+import Popover from "../components/Popover";
 import Spinner from "../components/Spinner";
 import { ICategory } from "../models/category.interface";
 import { IDish } from "../models/dish.interface";
@@ -25,6 +25,7 @@ const Home: Component = () => {
   const [dishes, setDishes] = createSignal<IDish[]>(null);
   const [categories, setCategories] = createSignal<ICategory[]>(null);
   const [filters, setFilters] = createSignal<number[]>([]);
+  const [pendingFilters, setPendingFilters] = createSignal<number[]>([]);
   const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
   const navigate = useNavigate();
 
@@ -51,17 +52,21 @@ const Home: Component = () => {
     const isChecked = target.checked;
 
     if (isChecked) {
-      setFilters((currFilters) => [...currFilters, id]);
+      setPendingFilters((currFilters) => [...currFilters, id]);
       setChecked((c) => ({ ...c, ...{ [id]: true } }));
       return;
     }
 
-    setFilters((currFilters) => currFilters.filter((filter) => filter !== id));
+    setPendingFilters((currFilters) => currFilters.filter((filter) => filter !== id));
     setChecked((c) => ({ ...c, ...{ [id]: false } }));
   };
 
+  const applyFilters = () => {
+    setFilters(pendingFilters());
+  };
+
   const onClearAll = () => {
-    setFilters([]);
+    setPendingFilters([]);
     setChecked({});
   };
 
@@ -108,36 +113,46 @@ const Home: Component = () => {
 
   return (
     <>
-      <div class="flex justify-between">
+      <div class="flex justify-between items-center mb-4">
         <Heading>Patiekalai</Heading>
-        <button
-          class="h-min"
-          onClick={() => showRandomDishes()}
-          aria-label="Show random dishes"
-        >
-          <img
-            class="h-8 w-8 transform hover:rotate-180 transition-transform"
-            src="/assets/dice.svg"
-            alt=""
-          />
-        </button>
+        <div class="flex gap-2">
+          <Popover
+            trigger={
+              <img
+                class="h-6 w-6"
+                src="/assets/filter.svg"
+                alt="Filter"
+              />
+            }
+            title="Filtruoti pagal kategoriją"
+            onClearAll={onClearAll}
+            onClose={applyFilters}
+          >
+            <For each={categories()}>
+              {(category) => (
+                <Checkbox
+                  onChange={(e: any) => onChange(e, category.id)}
+                  checked={checked()[category.id]}
+                >
+                  {category.name}
+                </Checkbox>
+              )}
+            </For>
+          </Popover>
+          <button
+            class="h-min p-2 rounded-md hover:bg-gray-100 transition-colors"
+            onClick={() => showRandomDishes()}
+            aria-label="Show random dishes"
+          >
+            <img
+              class="h-6 w-6 transform hover:rotate-180 transition-transform"
+              src="/assets/dice.svg"
+              alt=""
+            />
+          </button>
+        </div>
       </div>
-      <Selector
-        placeholder="Filtruoti pagal kategoriją"
-        onClearAll={onClearAll}
-      >
-        <For each={categories()}>
-          {(category) => (
-            <Checkbox
-              onChange={(e: any) => onChange(e, category.id)}
-              checked={checked()[category.id]}
-            >
-              {category.name}
-            </Checkbox>
-          )}
-        </For>
-      </Selector>
-      <div class="overflow-y-auto mt-4 mb-8 max-h-110 min-h-48">
+      <div class="overflow-y-auto mt-0 mb-8 max-h-110 min-h-48">
         <Show when={!!dishes()} fallback={<Spinner class="min-h-48" />}>
           <For each={dishes()}>
             {(dish, index) => (
