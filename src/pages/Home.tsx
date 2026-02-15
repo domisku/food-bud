@@ -159,11 +159,11 @@ const Home: Component = () => {
       </div>
       <div class="flex gap-4">
         <Button
-          onClick={() => navigate("/add-category")}
+          onClick={() => navigate("/categories")}
           variant="secondary"
           class="flex-1"
         >
-          Pridėti kategoriją
+          Valdyti kategorijas
         </Button>
         <Button onClick={() => navigate("/add-dish")} class="flex-1">
           Pridėti patiekalą

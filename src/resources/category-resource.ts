@@ -1,7 +1,9 @@
 import {
   addDoc,
   collection,
+  doc,
   documentId,
+  getDoc,
   getDocs,
   query,
   where,
@@ -105,5 +107,48 @@ export class CategoryResource {
     });
 
     return categoryNames;
+  }
+
+  /**
+   * Retrieves a single category by ID.
+   * @param id The ID of the category.
+   * @returns A promise that resolves with the ICategory object.
+   */
+  static async getCategory(id: string): Promise<ICategory> {
+    const categoryDocRef = doc(this.categoriesCollectionRef, id);
+    const categorySnapshot = await getDoc(categoryDocRef);
+
+    if (!categorySnapshot.exists()) {
+      throw new Error("Category not found");
+    }
+
+    return { id: categorySnapshot.id, ...categorySnapshot.data() } as ICategory;
+  }
+
+  /**
+   * Deletes a category and all associated dishCategory records.
+   * Uses a batch write for atomicity.
+   * @param id The ID of the category to delete.
+   * @returns A promise that resolves when the category is deleted.
+   */
+  static async deleteCategory(id: string): Promise<void> {
+    const batch = writeBatch(db);
+
+    // 1. Delete the category document itself
+    const categoryDocRef = doc(this.categoriesCollectionRef, id);
+    batch.delete(categoryDocRef);
+
+    // 2. Find and delete all associated dishCategory documents
+    const qDishCategoriesToDelete = query(
+      this.dishCategoriesCollectionRef,
+      where("categoryId", "==", id),
+    );
+    const dishCategoriesSnapshot = await getDocs(qDishCategoriesToDelete);
+
+    dishCategoriesSnapshot.forEach((dishCategoryDoc) => {
+      batch.delete(dishCategoryDoc.ref);
+    });
+
+    await batch.commit(); // Commit all deletions atomically
   }
 }
