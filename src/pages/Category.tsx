@@ -12,13 +12,17 @@ const Category: Component = () => {
   const params = useParams();
   const navigate = useNavigate();
   const [category, setCategory] = createSignal<ICategory>();
-  let dialogRef: HTMLDialogElement;
+  let dialogRef: HTMLDialogElement | undefined;
 
   onMount(async () => {
-    const categoryId = params.id;
-
-    const data = await CategoryResource.getCategory(categoryId);
-    setCategory(data);
+    try {
+      const categoryId = params.id;
+      const data = await CategoryResource.getCategory(categoryId);
+      setCategory(data);
+    } catch (error) {
+      handleError(error);
+      navigate("/");
+    }
   });
 
   const openDeleteDialog = () => {
@@ -31,7 +35,10 @@ const Category: Component = () => {
 
   const onDelete = async () => {
     try {
-      await CategoryResource.deleteCategory(category().id);
+      const cat = category();
+      if (!cat) return;
+      
+      await CategoryResource.deleteCategory(cat.id);
       closeDeleteDialog();
       navigate("/");
     } catch (error) {
