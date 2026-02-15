@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   query,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -123,6 +124,20 @@ export class CategoryResource {
     }
 
     return { id: categorySnapshot.id, ...categorySnapshot.data() } as ICategory;
+  }
+
+  /**
+   * Updates a category's data.
+   * @param id The ID of the category to update.
+   * @param category Partial category data to update.
+   * @returns A promise that resolves when the category is updated.
+   */
+  static async updateCategory(
+    id: string,
+    category: Partial<Omit<ICategory, "id">>,
+  ): Promise<void> {
+    const categoryDocRef = doc(this.categoriesCollectionRef, id);
+    await updateDoc(categoryDocRef, category);
   }
 
   /**

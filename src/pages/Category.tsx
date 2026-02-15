@@ -60,6 +60,13 @@ const Category: Component = () => {
         >
           Trinti
         </Button>
+        <Button
+          type="button"
+          onClick={() => navigate(`/categories/edit/${category().id}`)}
+          class="flex-1"
+        >
+          Redaguoti
+        </Button>
       </div>
 
       <dialog
