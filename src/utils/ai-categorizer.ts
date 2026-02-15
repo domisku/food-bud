@@ -2,6 +2,21 @@ import { ICategory } from "../models/category.interface";
 import { IDish } from "../models/dish.interface";
 
 /**
+ * Interface for Quill delta operation
+ */
+interface QuillOp {
+  insert: string | object;
+  attributes?: any;
+}
+
+/**
+ * Interface for Quill delta format
+ */
+interface QuillDelta {
+  ops: QuillOp[];
+}
+
+/**
  * AI-powered categorization utility that automatically assigns categories to dishes
  * based on their names and descriptions using keyword matching and semantic analysis.
  */
@@ -40,11 +55,11 @@ export class AICategorizer {
     // Parse description if it exists (it might be JSON from Quill editor)
     if (dish.description) {
       try {
-        const descData = JSON.parse(dish.description);
+        const descData: QuillDelta = JSON.parse(dish.description);
         // Quill stores content in ops array
         if (descData.ops && Array.isArray(descData.ops)) {
           const descText = descData.ops
-            .map((op: any) => (typeof op.insert === "string" ? op.insert : ""))
+            .map((op: QuillOp) => (typeof op.insert === "string" ? op.insert : ""))
             .join(" ");
           text += " " + descText.toLowerCase();
         }

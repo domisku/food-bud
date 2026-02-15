@@ -161,9 +161,19 @@ export class AutoCategorizationService {
 
     const previews = [];
 
-    for (const dish of dishes) {
-      const currentCategoryIds = await TagsResource.getDishCategoryIds(dish.id);
-      const currentCategoryNames = await CategoryResource.getCategoryNames(dish.id);
+    // Fetch all current category associations in one batch to avoid N+1 queries
+    const categoryAssociations = await Promise.all(
+      dishes.map((dish) => TagsResource.getDishCategoryIds(dish.id))
+    );
+
+    for (let i = 0; i < dishes.length; i++) {
+      const dish = dishes[i];
+      const currentCategoryIds = categoryAssociations[i];
+      
+      // Map current category IDs to names
+      const currentCategoryNames = currentCategoryIds
+        .map((id) => categories.find((c) => c.id === id)?.name)
+        .filter(Boolean) as string[];
 
       const suggestedCategoryIds = AICategorizer.categorizeDish(dish, categories);
       const suggestedCategories = suggestedCategoryIds.map((id) => {

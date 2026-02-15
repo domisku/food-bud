@@ -21,7 +21,7 @@ const AutoCategorize: Component = () => {
       currentCategories: string[];
       suggestedCategories: Array<{ id: string; name: string }>;
     }>
-  >(null);
+  >([]);
   const [stats, setStats] = createSignal<{
     totalDishes: number;
     categorizedDishes: number;
@@ -120,13 +120,13 @@ const AutoCategorize: Component = () => {
         </Show>
       </div>
 
-      <Show when={isProcessing() && !preview()}>
+      <Show when={isProcessing() && preview().length === 0}>
         <div class="flex justify-center items-center min-h-48">
           <Spinner />
         </div>
       </Show>
 
-      <Show when={preview()}>
+      <Show when={preview().length > 0}>
         <div class="mb-4">
           <h3 class="text-lg font-bold mb-3">
             Pasiūlytos kategorijos patiekalams:
