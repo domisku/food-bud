@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  doc,
   documentId,
   getDocs,
   query,
@@ -105,5 +106,32 @@ export class CategoryResource {
     });
 
     return categoryNames;
+  }
+
+  /**
+   * Deletes a category and all associated dishCategory link documents.
+   * Uses a batch write to ensure atomicity.
+   * @param id The ID of the category to delete.
+   * @returns A promise that resolves when the deletion is complete.
+   */
+  static async deleteCategory(id: string): Promise<void> {
+    const batch = writeBatch(db);
+
+    // 1. Delete the category document itself
+    const categoryDocRef = doc(this.categoriesCollectionRef, id);
+    batch.delete(categoryDocRef);
+
+    // 2. Find and delete all associated dishCategory (tag) documents
+    const qTagsToDelete = query(
+      this.dishCategoriesCollectionRef,
+      where("categoryId", "==", id),
+    );
+    const tagSnapshotsToDelete = await getDocs(qTagsToDelete);
+
+    tagSnapshotsToDelete.forEach((tagDoc) => {
+      batch.delete(tagDoc.ref);
+    });
+
+    await batch.commit(); // Commit all deletions atomically
   }
 }
