@@ -5,6 +5,7 @@ interface IPopoverProps {
   trigger: any;
   title?: string;
   onClearAll?: () => void;
+  onClose?: () => void;
 }
 
 const Popover: Component<IPopoverProps> = (props) => {
@@ -14,19 +15,26 @@ const Popover: Component<IPopoverProps> = (props) => {
     setIsOpen((isOpen) => !isOpen);
   };
 
+  const closePopover = () => {
+    setIsOpen(false);
+    if (props.onClose) {
+      props.onClose();
+    }
+  };
+
   const onOutsideClick = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
 
     const popover = target.closest(".popover");
 
     if (!popover && isOpen() === true) {
-      setIsOpen(false);
+      closePopover();
     }
   };
 
   const onEscape = (e: KeyboardEvent) => {
     if (e.key === "Escape" && isOpen() === true) {
-      setIsOpen(false);
+      closePopover();
     }
   };
 
@@ -55,13 +63,27 @@ const Popover: Component<IPopoverProps> = (props) => {
       >
         <div class="flex justify-between items-center mb-2 pb-2 border-b">
           <span class="font-semibold text-lg">{props.title ?? "Filter"}</span>
-          <button
-            type="button"
-            class="text-sm text-violet-600 hover:text-violet-700 font-bold"
-            onClick={props.onClearAll}
-          >
-            Išvalyti visus
-          </button>
+          <div class="flex gap-2 items-center">
+            <button
+              type="button"
+              class="text-sm text-violet-600 hover:text-violet-700 font-bold"
+              onClick={props.onClearAll}
+            >
+              Išvalyti visus
+            </button>
+            <button
+              type="button"
+              class="p-1 hover:bg-gray-100 rounded transition-colors"
+              onClick={closePopover}
+              aria-label="Close"
+            >
+              <img
+                class="h-4 w-4"
+                src="/assets/x.svg"
+                alt="Close"
+              />
+            </button>
+          </div>
         </div>
         {props.children}
       </div>

@@ -25,12 +25,14 @@ const Home: Component = () => {
   const [dishes, setDishes] = createSignal<IDish[]>(null);
   const [categories, setCategories] = createSignal<ICategory[]>(null);
   const [filters, setFilters] = createSignal<number[]>([]);
+  const [pendingFilters, setPendingFilters] = createSignal<number[]>([]);
   const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
   const navigate = useNavigate();
 
   onMount(async () => {
     const categories = await CategoryResource.getCategories();
     setCategories(categories);
+    setPendingFilters(filters());
   });
 
   createEffect(async () => {
@@ -51,16 +53,21 @@ const Home: Component = () => {
     const isChecked = target.checked;
 
     if (isChecked) {
-      setFilters((currFilters) => [...currFilters, id]);
+      setPendingFilters((currFilters) => [...currFilters, id]);
       setChecked((c) => ({ ...c, ...{ [id]: true } }));
       return;
     }
 
-    setFilters((currFilters) => currFilters.filter((filter) => filter !== id));
+    setPendingFilters((currFilters) => currFilters.filter((filter) => filter !== id));
     setChecked((c) => ({ ...c, ...{ [id]: false } }));
   };
 
+  const applyFilters = () => {
+    setFilters(pendingFilters());
+  };
+
   const onClearAll = () => {
+    setPendingFilters([]);
     setFilters([]);
     setChecked({});
   };
@@ -121,6 +128,7 @@ const Home: Component = () => {
             }
             title="Filtruoti pagal kategoriją"
             onClearAll={onClearAll}
+            onClose={applyFilters}
           >
             <For each={categories()}>
               {(category) => (
