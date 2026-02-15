@@ -69,7 +69,7 @@ const Categories: Component = () => {
           <For each={categories()}>
             {(category, index) => (
               <div
-                class="bg-white hover:bg-violet-50 px-4 mb-2 transition-all duration-200 rounded-md border border-gray-200 flex items-center justify-between min-w-0"
+                class="bg-white px-4 mb-2 rounded-md border border-gray-200 flex items-center justify-between min-w-0"
                 style={{
                   height: "42px",
                   animation: `fadeInUp 0.3s ease-out ${index() * 0.05}s backwards`,
