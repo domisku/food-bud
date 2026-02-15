@@ -76,14 +76,24 @@ const Categories: Component = () => {
                 }}
               >
                 <span class="truncate flex-1">{category.name}</span>
-                <button
-                  type="button"
-                  onClick={() => openDeleteDialog(category)}
-                  class="text-red-600 hover:text-red-700 text-sm px-3 py-1 hover:bg-red-50 rounded transition-colors"
-                  aria-label={`Trinti ${category.name}`}
-                >
-                  Trinti
-                </button>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/categories/edit/${category.id}`)}
+                    class="text-violet-600 hover:text-violet-700 text-sm px-3 py-1 hover:bg-violet-50 rounded transition-colors"
+                    aria-label={`Redaguoti ${category.name}`}
+                  >
+                    Redaguoti
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => openDeleteDialog(category)}
+                    class="text-red-600 hover:text-red-700 text-sm px-3 py-1 hover:bg-red-50 rounded transition-colors"
+                    aria-label={`Trinti ${category.name}`}
+                  >
+                    Trinti
+                  </button>
+                </div>
               </div>
             )}
           </For>
