@@ -78,6 +78,14 @@ const Home: Component = () => {
     }
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+    const dishes = allDishes();
+    if (dishes) {
+      applySearchFilter(dishes);
+    }
+  };
+
   const onChange = (e: Event, id: string) => {
     const target = e.target as HTMLInputElement;
     const isChecked = target.checked;
@@ -193,12 +201,26 @@ const Home: Component = () => {
         </div>
         <input
           type="text"
-          class="bg-violet-50 rounded-md outline-violet-900 pl-10 pr-4 py-2 w-full placeholder-gray-500 transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-violet-300"
+          class="bg-violet-50 rounded-md outline-violet-900 pl-10 pr-10 py-2 w-full placeholder-gray-500 transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-violet-300"
           placeholder="Ieškoti patiekalo..."
           value={searchQuery()}
           onInput={onSearchChange}
           aria-label="Search dishes"
         />
+        <Show when={searchQuery().length > 0}>
+          <button
+            type="button"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center hover:opacity-70 transition-opacity"
+            onClick={clearSearch}
+            aria-label="Clear search"
+          >
+            <img
+              class="h-4 w-4"
+              src="/assets/x.svg"
+              alt="Clear"
+            />
+          </button>
+        </Show>
       </div>
       <div class="overflow-y-auto mt-0 mb-8 max-h-110 min-h-48">
         <Show when={!!dishes()} fallback={<Spinner class="min-h-48" />}>
