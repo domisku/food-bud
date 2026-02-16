@@ -95,10 +95,15 @@ const AddDish: Component = () => {
     try {
       const allCategories = categories() || [];
       const categoryNames = allCategories.map((c) => c.name);
+      
+      console.log("Requesting suggestions for:", name, "with categories:", categoryNames);
+      
       const suggestions = await GeminiResource.suggestCategories(
         name,
         categoryNames,
       );
+
+      console.log("Received suggestions:", suggestions);
 
       if (suggestions.length === 0) {
         toast("Nepavyko rasti tinkamų kategorijų pasiūlymų", {
@@ -112,6 +117,8 @@ const AddDish: Component = () => {
         suggestions.includes(c.name),
       );
       
+      console.log("Matched categories:", suggestedCategories);
+      
       // Update both states together
       const newChecked = { ...checked() };
       suggestedCategories.forEach((cat) => {
@@ -123,7 +130,12 @@ const AddDish: Component = () => {
       const count = suggestions.length;
       toast.success(`Pasiūlyta ${count} ${getPluralizedCategoryWord(count)}`);
     } catch (error) {
-      handleError(error);
+      console.error("Error in getSuggestedCategories:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        handleError(error);
+      }
     } finally {
       setIsLoadingSuggestions(false);
     }

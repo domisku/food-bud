@@ -31,6 +31,10 @@ export class GeminiResource {
       return [];
     }
 
+    if (existingCategories.length === 0) {
+      throw new Error("Nėra kategorijų. Pirmiausia sukurkite kategorijas.");
+    }
+
     try {
       const genAI = this.getClient();
       // Use the free gemini-1.5-flash model
@@ -47,29 +51,44 @@ Return ONLY a JSON array of category names, without any additional text or forma
 
 If no existing categories match well, return an empty array: []`;
 
+      console.log("Gemini request - Dish:", sanitizedDishName, "Categories:", existingCategories);
+
       const result = await model.generateContent(prompt);
       const response = result.response;
       const text = response.text().trim();
 
+      console.log("Gemini response:", text);
+
       // Parse the JSON response
       try {
-        const suggestions = JSON.parse(text);
+        // Remove markdown code blocks if present
+        let cleanText = text;
+        if (text.startsWith("```")) {
+          cleanText = text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
+        }
+
+        const suggestions = JSON.parse(cleanText);
         if (Array.isArray(suggestions)) {
           // Filter to only include categories that actually exist
-          return suggestions.filter((cat) =>
+          const filtered = suggestions.filter((cat) =>
             existingCategories.includes(cat),
           );
+          console.log("Filtered suggestions:", filtered);
+          return filtered;
+        } else {
+          throw new Error("AI atsakymas nėra masyvas");
         }
       } catch (parseError) {
-        console.error("Failed to parse Gemini response:", text);
-        return [];
+        console.error("Failed to parse Gemini response:", text, parseError);
+        throw new Error(`Nepavyko apdoroti AI atsakymo. Atsakymas: ${text.substring(0, 100)}`);
       }
-
-      return [];
     } catch (error) {
       console.error("Error getting category suggestions from Gemini:", error);
-      // Fail gracefully - return empty array if API call fails
-      return [];
+      // Re-throw the error so the UI can display it
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("AI klaida: " + String(error));
     }
   }
 }
