@@ -8,6 +8,26 @@ This is the reason you see a `pnpm-lock.yaml`. That being said, any package mana
 $ npm install # or pnpm install or yarn install
 ```
 
+## Setup
+
+1. Copy `.env.example` to `.env` and fill in your environment variables:
+   - Firebase configuration variables (`VITE_FIREBASE_*`)
+   - Google Gemini API key (`VITE_GEMINI_API_KEY`) for AI-powered category suggestions
+
+```bash
+cp .env.example .env
+# Edit .env with your actual API keys
+```
+
+## Features
+
+- 📱 Progressive Web Application (PWA) - installable on mobile devices
+- 🍽️ Create and manage dishes with rich text descriptions
+- 🏷️ Organize dishes with custom categories
+- 🤖 **AI-Powered Category Suggestions** - Get intelligent category recommendations using Google Gemini AI
+- 🔍 Filter dishes by categories
+- 🔐 Secure authentication with Firebase Auth
+
 ### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
 
 ## Available Scripts
