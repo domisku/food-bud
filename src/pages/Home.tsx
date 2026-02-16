@@ -52,6 +52,10 @@ const Home: Component = () => {
   });
 
   const applySearchFilter = (dishList: IDish[]) => {
+    if (!dishList) {
+      return;
+    }
+    
     const query = searchQuery().toLowerCase().trim();
     
     if (query === "") {
@@ -68,7 +72,10 @@ const Home: Component = () => {
   const onSearchChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     setSearchQuery(target.value);
-    applySearchFilter(allDishes() || []);
+    const dishes = allDishes();
+    if (dishes) {
+      applySearchFilter(dishes);
+    }
   };
 
   const onChange = (e: Event, id: string) => {
