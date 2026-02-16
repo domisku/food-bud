@@ -23,10 +23,12 @@ const Home: Component = () => {
   checkAuth();
 
   const [dishes, setDishes] = createSignal<IDish[]>(null);
+  const [allDishes, setAllDishes] = createSignal<IDish[]>(null);
   const [categories, setCategories] = createSignal<ICategory[]>(null);
-  const [filters, setFilters] = createSignal<number[]>([]);
-  const [pendingFilters, setPendingFilters] = createSignal<number[]>([]);
-  const [checked, setChecked] = createSignal<{ [key: number]: boolean }>({});
+  const [filters, setFilters] = createSignal<string[]>([]);
+  const [pendingFilters, setPendingFilters] = createSignal<string[]>([]);
+  const [checked, setChecked] = createSignal<{ [key: string]: boolean }>({});
+  const [searchQuery, setSearchQuery] = createSignal<string>("");
   const navigate = useNavigate();
 
   onMount(async () => {
@@ -38,16 +40,54 @@ const Home: Component = () => {
     if (filters().length > 0) {
       const data = await DishResource.getFilteredDishes(filters());
 
-      setDishes(data);
+      setAllDishes(data);
+      applySearchFilter(data);
       return;
     }
 
     const dishes = await DishResource.getDishes();
 
-    setDishes(dishes);
+    setAllDishes(dishes);
+    applySearchFilter(dishes);
   });
 
-  const onChange = (e: Event, id: number) => {
+  const applySearchFilter = (dishList: IDish[]) => {
+    if (!dishList) {
+      return;
+    }
+    
+    const query = searchQuery().toLowerCase().trim();
+    
+    if (query === "") {
+      setDishes(dishList);
+      return;
+    }
+
+    const filtered = dishList.filter(dish => 
+      dish?.name && dish.name.toLowerCase().includes(query)
+    );
+    setDishes(filtered);
+  };
+
+  const reapplyFilter = () => {
+    const dishes = allDishes();
+    if (dishes) {
+      applySearchFilter(dishes);
+    }
+  };
+
+  const onSearchChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    setSearchQuery(target.value);
+    reapplyFilter();
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    reapplyFilter();
+  };
+
+  const onChange = (e: Event, id: string) => {
     const target = e.target as HTMLInputElement;
     const isChecked = target.checked;
 
@@ -151,6 +191,37 @@ const Home: Component = () => {
             />
           </button>
         </div>
+      </div>
+      <div class="relative mb-4">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <img
+            class="h-5 w-5"
+            src="/assets/search.svg"
+            alt="Search"
+          />
+        </div>
+        <input
+          type="text"
+          class="bg-violet-50 rounded-md outline-violet-900 pl-10 pr-10 py-2 w-full placeholder-gray-500 transition-all duration-200 focus:bg-white focus:ring-2 focus:ring-violet-300"
+          placeholder="Ieškoti patiekalo..."
+          value={searchQuery()}
+          onInput={onSearchChange}
+          aria-label="Search dishes"
+        />
+        <Show when={searchQuery().length > 0}>
+          <button
+            type="button"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center hover:opacity-70 transition-opacity"
+            onClick={clearSearch}
+            aria-label="Clear search"
+          >
+            <img
+              class="h-4 w-4"
+              src="/assets/x.svg"
+              alt="Clear"
+            />
+          </button>
+        </Show>
       </div>
       <div class="overflow-y-auto mt-0 mb-8 max-h-110 min-h-48">
         <Show when={!!dishes()} fallback={<Spinner class="min-h-48" />}>
