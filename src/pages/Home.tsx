@@ -64,7 +64,7 @@ const Home: Component = () => {
     }
 
     const filtered = dishList.filter(dish => 
-      dish.name.toLowerCase().includes(query)
+      dish?.name?.toLowerCase().includes(query)
     );
     setDishes(filtered);
   };
@@ -186,7 +186,7 @@ const Home: Component = () => {
       <div class="relative mb-4">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <img
-            class="h-5 w-5 text-gray-400"
+            class="h-5 w-5"
             src="/assets/search.svg"
             alt="Search"
           />
