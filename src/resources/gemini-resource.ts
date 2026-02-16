@@ -35,11 +35,14 @@ export class GeminiResource {
       throw new Error("Nėra kategorijų. Pirmiausia sukurkite kategorijas.");
     }
 
+    // Using gemini-1.5-flash-001 - stable versioned model identifier
+    // This is recommended over non-versioned names for production use
+    const modelName = "gemini-1.5-flash-001";
+    console.log("Attempting to use Gemini model:", modelName);
+
     try {
       const genAI = this.getClient();
-      // Use gemini-pro (stable free tier model)
-      // Alternative: gemini-1.5-flash-latest for newer features
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ model: modelName });
 
       // Sanitize the dish name by escaping special characters
       const sanitizedDishName = dishName.replace(/["\\\n\r]/g, " ").trim();
