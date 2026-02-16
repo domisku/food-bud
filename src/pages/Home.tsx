@@ -106,10 +106,14 @@ const Home: Component = () => {
     const current = filters();
     
     // Only update filters if they actually changed
-    const hasChanged = 
-      pending.length !== current.length ||
-      pending.some(filter => !current.includes(filter)) ||
-      current.some(filter => !pending.includes(filter));
+    if (pending.length !== current.length) {
+      setFilters(pending);
+      return;
+    }
+    
+    // Use Sets for O(n) lookup instead of O(n²)
+    const currentSet = new Set(current);
+    const hasChanged = pending.some(filter => !currentSet.has(filter));
     
     if (hasChanged) {
       setFilters(pending);
