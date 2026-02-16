@@ -14,6 +14,7 @@ import { GeminiResource } from "../resources/gemini-resource";
 import { checkAuth } from "../utils/check-auth";
 import { handleError } from "../utils/handle-error";
 import { isQuillBlank } from "../utils/is-quill-blank";
+import { getPluralizedCategoryWord } from "../utils/pluralize";
 import toast from "solid-toast";
 
 const AddDish: Component = () => {
@@ -120,8 +121,7 @@ const AddDish: Component = () => {
       setChecked(newChecked);
       
       const count = suggestions.length;
-      const categoryWord = count === 1 ? "kategorija" : count % 10 >= 2 && count % 10 <= 9 && (count % 100 < 10 || count % 100 >= 20) ? "kategorijos" : "kategorijų";
-      toast.success(`Pasiūlyta ${count} ${categoryWord}`);
+      toast.success(`Pasiūlyta ${count} ${getPluralizedCategoryWord(count)}`);
     } catch (error) {
       handleError(error);
     } finally {

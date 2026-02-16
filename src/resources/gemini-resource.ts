@@ -36,7 +36,10 @@ export class GeminiResource {
       // Use the free gemini-1.5-flash model
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      const prompt = `Given the dish name "${dishName}" and the following existing categories: ${existingCategories.join(", ")}.
+      // Sanitize the dish name by escaping special characters
+      const sanitizedDishName = dishName.replace(/["\\\n\r]/g, " ").trim();
+
+      const prompt = `Given the dish name "${sanitizedDishName}" and the following existing categories: ${existingCategories.join(", ")}.
 
 Suggest 3-5 most relevant category names from the existing categories list that would be appropriate for this dish. Only return category names that exist in the provided list.
 
