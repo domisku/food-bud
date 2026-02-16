@@ -59,9 +59,9 @@ const Popover: Component<IPopoverProps> = (props) => {
         {props.trigger}
       </button>
       <div
-        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute right-0 top-12 bg-white w-72 max-h-96 rounded-md overflow-y-auto border shadow-lg z-50`}
+        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute right-0 top-12 bg-white w-72 rounded-md border shadow-lg z-50`}
       >
-        <div class="sticky top-0 bg-white flex justify-between items-center gap-4 px-5 py-3 pb-2 border-b z-10">
+        <div class="bg-white flex justify-between items-center gap-4 px-5 py-3 pb-2 border-b">
           <span class="font-semibold text-lg">{props.title ?? "Filter"}</span>
           <button
             type="button"
@@ -75,10 +75,10 @@ const Popover: Component<IPopoverProps> = (props) => {
             </svg>
           </button>
         </div>
-        <div class="px-5 py-3">
+        <div class="px-5 py-3 overflow-y-auto max-h-80">
           {props.children}
         </div>
-        <div class="sticky bottom-0 bg-white px-5 py-3 pt-2 border-t">
+        <div class="bg-white px-5 py-3 pt-2 border-t">
           <button
             type="button"
             class="w-full text-sm text-violet-600 hover:text-violet-700 font-bold py-2"
