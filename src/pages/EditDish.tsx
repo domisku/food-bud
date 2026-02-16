@@ -138,7 +138,10 @@ const EditDish: Component = () => {
 
       setSelectedCategoryIds(suggestedCategoryIds);
       setChecked(newChecked);
-      toast.success(`Pasiūlyta ${suggestions.length} kategorijos`);
+      
+      const count = suggestions.length;
+      const categoryWord = count === 1 ? "kategorija" : count % 10 >= 2 && count % 10 <= 9 && (count % 100 < 10 || count % 100 >= 20) ? "kategorijos" : "kategorijų";
+      toast.success(`Pasiūlyta ${count} ${categoryWord}`);
     } catch (error) {
       handleError(error);
     } finally {
