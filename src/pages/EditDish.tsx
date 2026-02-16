@@ -132,13 +132,13 @@ const EditDish: Component = () => {
         .filter((c) => suggestions.includes(c.name))
         .map((c) => c.id);
       
+      // Update both states together
       const newChecked = { ...checked() };
       suggestedCategoryIds.forEach((id) => {
         newChecked[id] = true;
       });
-
-      setSelectedCategoryIds(suggestedCategoryIds);
       setChecked(newChecked);
+      setSelectedCategoryIds(suggestedCategoryIds);
       
       const count = suggestions.length;
       toast.success(`Pasiūlyta ${count} ${getPluralizedCategoryWord(count)}`);
