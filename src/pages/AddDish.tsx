@@ -10,9 +10,11 @@ import TextInput from "../components/TextInput";
 import { ICategory } from "../models/category.interface";
 import { CategoryResource } from "../resources/category-resource";
 import { DishResource } from "../resources/dish-resource";
+import { GeminiResource } from "../resources/gemini-resource";
 import { checkAuth } from "../utils/check-auth";
 import { handleError } from "../utils/handle-error";
 import { isQuillBlank } from "../utils/is-quill-blank";
+import toast from "solid-toast";
 
 const AddDish: Component = () => {
   checkAuth();
@@ -24,6 +26,8 @@ const AddDish: Component = () => {
   );
   const [checked, setChecked] = createSignal<{ [key: string]: boolean }>({});
   const [contents, setContents] = createSignal<object>(null);
+  const [dishName, setDishName] = createSignal<string>("");
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = createSignal(false);
 
   onMount(async () => {
     const data = await CategoryResource.getCategories();
@@ -79,6 +83,49 @@ const AddDish: Component = () => {
     setContents(contents);
   };
 
+  const getSuggestedCategories = async () => {
+    const name = dishName();
+    if (!name || name.trim() === "") {
+      toast.error("Įveskite patiekalo pavadinimą");
+      return;
+    }
+
+    setIsLoadingSuggestions(true);
+    try {
+      const allCategories = categories() || [];
+      const categoryNames = allCategories.map((c) => c.name);
+      const suggestions = await GeminiResource.suggestCategories(
+        name,
+        categoryNames,
+      );
+
+      if (suggestions.length === 0) {
+        toast("Nepavyko rasti tinkamų kategorijų pasiūlymų", {
+          icon: "💡",
+        });
+        return;
+      }
+
+      // Auto-select suggested categories
+      const suggestedCategories = allCategories.filter((c) =>
+        suggestions.includes(c.name),
+      );
+      
+      const newChecked = { ...checked() };
+      suggestedCategories.forEach((cat) => {
+        newChecked[cat.id] = true;
+      });
+
+      setSelectedCategories(suggestedCategories);
+      setChecked(newChecked);
+      toast.success(`Pasiūlyta ${suggestions.length} kategorijos`);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
+  };
+
   return (
     <>
       <Backlink class="mb-6">Grįžti</Backlink>
@@ -87,7 +134,11 @@ const AddDish: Component = () => {
         <label class="block" for="name">
           Pavadinimas
         </label>
-        <TextInput id="name" placeholder={"Bulviniai blynai"}></TextInput>
+        <TextInput
+          id="name"
+          placeholder={"Bulviniai blynai"}
+          onInput={(e) => setDishName(e.currentTarget.value)}
+        ></TextInput>
         <label class="block" for="description">
           Aprašymas
         </label>
@@ -95,6 +146,15 @@ const AddDish: Component = () => {
           id="description"
           onContentsChange={onContentsChange}
         ></QuillEditor>
+
+        <Button
+          type="button"
+          onClick={getSuggestedCategories}
+          disabled={isLoadingSuggestions()}
+          class="mb-4"
+        >
+          {isLoadingSuggestions() ? "Kraunama..." : "🤖 Pasiūlyti kategorijas su AI"}
+        </Button>
 
         <Selector
           placeholder="Pasirinkite kategorijas"

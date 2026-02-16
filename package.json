@@ -16,6 +16,7 @@
     "vite-plugin-windicss": "1.8.10"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@solidjs/router": "0.8.3",
     "@supabase/supabase-js": "2.10.0",
     "firebase": "12.8.0",
