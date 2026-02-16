@@ -111,7 +111,7 @@ const Home: Component = () => {
       return;
     }
     
-    // Use Sets for O(n) lookup instead of O(n²)
+    // Use Set for O(n) lookup instead of O(n²)
     const currentSet = new Set(current);
     const hasChanged = pending.some(filter => !currentSet.has(filter));
     
