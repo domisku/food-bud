@@ -102,7 +102,22 @@ const Home: Component = () => {
   };
 
   const applyFilters = () => {
-    setFilters(pendingFilters());
+    const pending = pendingFilters();
+    const current = filters();
+    
+    // Only update filters if they actually changed
+    if (pending.length !== current.length) {
+      setFilters(pending);
+      return;
+    }
+    
+    // Use Set for O(n) lookup instead of O(n²)
+    const currentSet = new Set(current);
+    const hasChanged = pending.some(filter => !currentSet.has(filter));
+    
+    if (hasChanged) {
+      setFilters(pending);
+    }
   };
 
   const onClearAll = () => {
