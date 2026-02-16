@@ -59,7 +59,8 @@ const Popover: Component<IPopoverProps> = (props) => {
         {props.trigger}
       </button>
       <div
-        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute right-0 top-12 bg-white w-72 rounded-md border shadow-lg z-50`}
+        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute top-12 bg-white rounded-md border shadow-lg z-50`}
+        style="right: 0; width: min(288px, calc(100vw - 3rem));"
       >
         <div class="bg-white flex justify-between items-center gap-4 px-5 py-3 pb-2 border-b">
           <span class="font-semibold text-lg">{props.title ?? "Filter"}</span>
