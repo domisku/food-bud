@@ -69,21 +69,22 @@ const Home: Component = () => {
     setDishes(filtered);
   };
 
-  const onSearchChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    setSearchQuery(target.value);
+  const reapplyFilter = () => {
     const dishes = allDishes();
     if (dishes) {
       applySearchFilter(dishes);
     }
   };
 
+  const onSearchChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    setSearchQuery(target.value);
+    reapplyFilter();
+  };
+
   const clearSearch = () => {
     setSearchQuery("");
-    const dishes = allDishes();
-    if (dishes) {
-      applySearchFilter(dishes);
-    }
+    reapplyFilter();
   };
 
   const onChange = (e: Event, id: string) => {
