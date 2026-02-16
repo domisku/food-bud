@@ -181,6 +181,17 @@ const Home: Component = () => {
           </Popover>
           <button
             class="h-min p-2 rounded-md hover:bg-gray-100 transition-colors"
+            onClick={() => navigate("/categories")}
+            aria-label="Manage categories"
+          >
+            <img
+              class="h-6 w-6"
+              src="/assets/categories.svg"
+              alt="Categories"
+            />
+          </button>
+          <button
+            class="h-min p-2 rounded-md hover:bg-gray-100 transition-colors"
             onClick={() => showRandomDishes()}
             aria-label="Show random dishes"
           >
@@ -243,18 +254,9 @@ const Home: Component = () => {
         </Show>
         {dishes()?.length === 0 && <p>Patiekalų nerasta</p>}
       </div>
-      <div class="flex gap-4">
-        <Button
-          onClick={() => navigate("/categories")}
-          variant="secondary"
-          class="flex-1"
-        >
-          Valdyti kategorijas
-        </Button>
-        <Button onClick={() => navigate("/add-dish")} class="flex-1">
-          Pridėti patiekalą
-        </Button>
-      </div>
+      <Button onClick={() => navigate("/add-dish")} class="w-full">
+        Pridėti patiekalą
+      </Button>
     </>
   );
 };

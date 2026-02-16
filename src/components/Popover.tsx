@@ -10,6 +10,11 @@ interface IPopoverProps {
 
 const Popover: Component<IPopoverProps> = (props) => {
   const [isOpen, setIsOpen] = createSignal(false);
+  
+  // Responsive width: 288px on desktop, shrinks to fit mobile viewports
+  const popoverWidth = "min(288px, calc(100vw - 3rem))";
+  // Position popover to align with rightmost button (offset by 2 buttons + gaps)
+  const popoverOffset = "calc(2 * (2.5rem + 0.5rem))"; // 2 buttons (40px each + padding) + 2 gaps
 
   const togglePopover = () => {
     setIsOpen((isOpen) => !isOpen);
@@ -59,7 +64,8 @@ const Popover: Component<IPopoverProps> = (props) => {
         {props.trigger}
       </button>
       <div
-        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute right-0 top-12 bg-white w-72 rounded-md border shadow-lg z-50`}
+        class={`${isOpen() ? "block" : "hidden"} flex flex-col absolute top-12 bg-white rounded-md border shadow-lg z-50`}
+        style={{ right: `calc(-1 * ${popoverOffset})`, width: popoverWidth }}
       >
         <div class="bg-white flex justify-between items-center gap-4 px-5 py-3 pb-2 border-b">
           <span class="font-semibold text-lg">{props.title ?? "Filter"}</span>
