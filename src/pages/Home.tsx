@@ -64,7 +64,7 @@ const Home: Component = () => {
     }
 
     const filtered = dishList.filter(dish => 
-      dish?.name?.toLowerCase().includes(query)
+      dish?.name && dish.name.toLowerCase().includes(query)
     );
     setDishes(filtered);
   };
