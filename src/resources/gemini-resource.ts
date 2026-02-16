@@ -37,8 +37,9 @@ export class GeminiResource {
 
     try {
       const genAI = this.getClient();
-      // Use the free gemini-1.5-flash model
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      // Use gemini-pro (stable free tier model)
+      // Alternative: gemini-1.5-flash-latest for newer features
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
       // Sanitize the dish name by escaping special characters
       const sanitizedDishName = dishName.replace(/["\\\n\r]/g, " ").trim();
