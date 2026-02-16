@@ -154,7 +154,7 @@ const Home: Component = () => {
   return (
     <>
       <div class="flex justify-between items-center mb-4">
-        <Heading>Patiekalai</Heading>
+        <Heading class="mb-0">Patiekalai</Heading>
         <div class="flex gap-2">
           <Popover
             trigger={
