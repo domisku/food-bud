@@ -116,6 +116,12 @@ const AddDish: Component = () => {
         (name) => !selectedCategoryNames.includes(name)
       );
 
+      if (filteredSuggestions.length === 0) {
+        toast("Visos pasiūlytos kategorijos jau pasirinktos", {
+          icon: "✓",
+        });
+      }
+
       // Store suggestions as tags (don't auto-apply)
       setSuggestedCategories(filteredSuggestions);
     } catch (error) {
