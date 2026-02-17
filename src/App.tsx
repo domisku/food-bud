@@ -14,7 +14,7 @@ import Login from "./pages/Login";
 const App: Component = () => {
   return (
     <main class="p-2">
-      <div class="max-w-xl w-xl bg-light-50 rounded-xl p-4 md:p-10  shadow-2xl flex flex-col max-h-full max-w-full overflow-y-auto">
+      <div class="max-w-xl w-xl bg-light-50 rounded-xl p-4 md:p-10  shadow-2xl flex flex-col max-h-full max-w-full">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

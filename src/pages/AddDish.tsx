@@ -143,81 +143,91 @@ const AddDish: Component = () => {
   };
 
   return (
-    <>
-      <Backlink class="mb-6">Grįžti</Backlink>
-      <Heading>Naujas patiekalas</Heading>
-      <form onSubmit={submit} class="flex flex-col">
-        <label class="block" for="name">
-          Pavadinimas
-        </label>
-        <TextInput
-          id="name"
-          placeholder={"Bulviniai blynai"}
-          onInput={(e) => setDishName(e.currentTarget.value)}
-        ></TextInput>
-        <label class="block" for="description">
-          Aprašymas
-        </label>
-        <QuillEditor
-          id="description"
-          onContentsChange={onContentsChange}
-        ></QuillEditor>
+    <div class="flex flex-col h-full">
+      {/* Sticky Header */}
+      <div class="flex-shrink-0 mb-6">
+        <Backlink class="mb-6">Grįžti</Backlink>
+        <Heading>Naujas patiekalas</Heading>
+      </div>
+      
+      {/* Scrollable Content */}
+      <div class="flex-1 overflow-y-auto">
+        <form onSubmit={submit} class="flex flex-col">
+          <label class="block" for="name">
+            Pavadinimas
+          </label>
+          <TextInput
+            id="name"
+            placeholder={"Bulviniai blynai"}
+            onInput={(e) => setDishName(e.currentTarget.value)}
+          ></TextInput>
+          <label class="block" for="description">
+            Aprašymas
+          </label>
+          <QuillEditor
+            id="description"
+            onContentsChange={onContentsChange}
+          ></QuillEditor>
 
-        <label class="block mb-2">Kategorijos</label>
-        
-        <div class="flex items-start gap-2">
-          <div class="flex-1">
-            <Selector
-              placeholder="Pasirinkite kategorijas"
-              openUp={true}
-              onClearAll={onClearAll}
-            >
-              <For each={categories()}>
-                {(category) => (
-                  <Checkbox
-                    onChange={(e) => onChange(e, category)}
-                    checked={checked()[category.id]}
-                  >
-                    {category.name}
-                  </Checkbox>
-                )}
-              </For>
-            </Selector>
-          </div>
+          <label class="block mb-2">Kategorijos</label>
           
-          <button
-            type="button"
-            onClick={getSuggestedCategories}
-            disabled={isLoadingSuggestions()}
-            class="h-[42px] w-10 flex items-center justify-center rounded-md border border-transparent text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
-            title="Pasiūlyti kategorijas su AI"
-          >
-            {isLoadingSuggestions() ? "⏳" : "🤖"}
-          </button>
-        </div>
-
-        {suggestedCategories().length > 0 && (
-          <div class="mb-4 p-3 bg-violet-50 rounded-md mt-2">
-            <p class="text-sm text-violet-900 font-semibold mb-2">AI pasiūlytos kategorijos:</p>
-            <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-              <For each={suggestedCategories()}>
-                {(categoryName) => (
-                  <button
-                    type="button"
-                    onClick={() => applySuggestedCategory(categoryName)}
-                    class="px-3 py-1 bg-white border border-violet-300 rounded-full text-sm text-violet-700 hover:bg-violet-100 hover:border-violet-400 transition-colors"
-                  >
-                    {categoryName}
-                  </button>
-                )}
-              </For>
+          <div class="flex items-start gap-2">
+            <div class="flex-1">
+              <Selector
+                placeholder="Pasirinkite kategorijas"
+                openUp={true}
+                onClearAll={onClearAll}
+              >
+                <For each={categories()}>
+                  {(category) => (
+                    <Checkbox
+                      onChange={(e) => onChange(e, category)}
+                      checked={checked()[category.id]}
+                    >
+                      {category.name}
+                    </Checkbox>
+                  )}
+                </For>
+              </Selector>
             </div>
+            
+            <button
+              type="button"
+              onClick={getSuggestedCategories}
+              disabled={isLoadingSuggestions()}
+              class="h-[42px] w-10 flex items-center justify-center rounded-md border border-transparent text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              title="Pasiūlyti kategorijas su AI"
+            >
+              {isLoadingSuggestions() ? "⏳" : "🤖"}
+            </button>
           </div>
-        )}
 
-        <Button type="submit">Pridėti</Button>
-      </form>
-    </>
+          {suggestedCategories().length > 0 && (
+            <div class="mb-4 p-3 bg-violet-50 rounded-md mt-2">
+              <p class="text-sm text-violet-900 font-semibold mb-2">AI pasiūlytos kategorijos:</p>
+              <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                <For each={suggestedCategories()}>
+                  {(categoryName) => (
+                    <button
+                      type="button"
+                      onClick={() => applySuggestedCategory(categoryName)}
+                      class="px-3 py-1 bg-white border border-violet-300 rounded-full text-sm text-violet-700 hover:bg-violet-100 hover:border-violet-400 transition-colors"
+                    >
+                      {categoryName}
+                    </button>
+                  )}
+                </For>
+              </div>
+            </div>
+          )}
+        </form>
+      </div>
+      
+      {/* Sticky Footer */}
+      <div class="flex-shrink-0 mt-4">
+        <Button type="submit" onClick={submit}>Pridėti</Button>
+      </div>
+    </div>
   );
 };
 
