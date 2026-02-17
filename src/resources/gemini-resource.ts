@@ -65,11 +65,11 @@ Format your response as a JSON array of strings, e.g., ["Category1", "Category2"
 Do not include any other text or explanation outside of the JSON array.`;
 
     const genAI = this.getClient();
-    let lastError: Error | null = null;
 
     // Try each model in the fallback order
     for (let i = 0; i < this.MODEL_FALLBACK_ORDER.length; i++) {
       const modelName = this.MODEL_FALLBACK_ORDER[i];
+      const isLastModel = i === this.MODEL_FALLBACK_ORDER.length - 1;
       
       try {
         const model = genAI.getGenerativeModel({ model: modelName });
@@ -98,20 +98,20 @@ Do not include any other text or explanation outside of the JSON array.`;
           throw new Error(`Nepavyko apdoroti AI atsakymo. Atsakymas: ${text.substring(0, 100)}`);
         }
       } catch (error) {
-        lastError = error instanceof Error ? error : new Error("AI klaida: " + String(error));
+        const errorObj = error instanceof Error ? error : new Error("AI klaida: " + String(error));
         
         // If this is a rate limit error and we have more models to try, continue to next model
-        if (this.isRateLimitError(error) && i < this.MODEL_FALLBACK_ORDER.length - 1) {
+        if (this.isRateLimitError(error) && !isLastModel) {
           console.warn(`Rate limit hit for model ${modelName}, trying next model...`);
           continue;
         }
         
         // If it's not a rate limit error or we're out of models, throw
-        throw lastError;
+        throw errorObj;
       }
     }
 
-    // This should never be reached, but just in case
-    throw lastError || new Error("AI klaida: nepavyko gauti atsakymo");
+    // This should never be reached due to the throw in the catch block on the last iteration
+    throw new Error("AI klaida: nepavyko gauti atsakymo");
   }
 }
