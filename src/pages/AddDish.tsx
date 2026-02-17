@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import { Component, createSignal, For, onMount } from "solid-js";
+import { Component, createEffect, createSignal, For, onMount } from "solid-js";
 import Backlink from "../components/Backlink";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
@@ -30,6 +30,8 @@ const AddDish: Component = () => {
   const [dishName, setDishName] = createSignal<string>("");
   const [isLoadingSuggestions, setIsLoadingSuggestions] = createSignal(false);
   const [suggestedCategories, setSuggestedCategories] = createSignal<string[]>([]);
+  
+  let scrollableContentRef: HTMLDivElement | undefined;
 
   onMount(async () => {
     const data = await CategoryResource.getCategories();
@@ -148,6 +150,20 @@ const AddDish: Component = () => {
     setSuggestedCategories((curr) => curr.filter((c) => c !== categoryName));
   };
 
+  // Auto-scroll to bottom when suggestions appear
+  createEffect(() => {
+    const suggestions = suggestedCategories();
+    if (suggestions.length > 0 && scrollableContentRef) {
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        scrollableContentRef?.scrollTo({
+          top: scrollableContentRef.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  });
+
   return (
     <div class="flex flex-col h-full">
       {/* Sticky Header */}
@@ -158,7 +174,7 @@ const AddDish: Component = () => {
       
       <form onSubmit={submit} class="flex-1 flex flex-col min-h-0">
         {/* Scrollable Content */}
-        <div class="flex-1 overflow-y-auto pr-1">
+        <div ref={scrollableContentRef} class="flex-1 overflow-y-auto pr-1">
           <label class="block" for="name">
             Pavadinimas
           </label>
