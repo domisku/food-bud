@@ -184,7 +184,7 @@ const EditDish: Component = () => {
 
         <label class="block mb-2">Kategorijos</label>
         
-        <div class="flex items-start gap-2 mb-4">
+        <div class="flex items-start gap-2">
           <div class="flex-1">
             <Selector onClearAll={onClearAll} openUp={true}>
               <For each={categories()}>
@@ -204,7 +204,7 @@ const EditDish: Component = () => {
             type="button"
             onClick={getSuggestedCategories}
             disabled={isLoadingSuggestions()}
-            class="w-10 h-10 flex items-center justify-center rounded-md text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+            class="w-10 h-10 flex items-center justify-center rounded-md border border-transparent text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
             title="Pasiūlyti kategorijas su AI"
           >
             {isLoadingSuggestions() ? "⏳" : "🤖"}
@@ -212,7 +212,7 @@ const EditDish: Component = () => {
         </div>
 
         {suggestedCategories().length > 0 && (
-          <div class="mb-4 p-3 bg-violet-50 rounded-md">
+          <div class="mb-4 p-3 bg-violet-50 rounded-md -mt-4">
             <p class="text-sm text-violet-900 font-semibold mb-2">AI pasiūlytos kategorijos:</p>
             <div class="flex flex-wrap gap-2">
               <For each={suggestedCategories()}>
