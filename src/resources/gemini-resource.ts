@@ -36,7 +36,7 @@ export class GeminiResource {
     }
 
     // Use gemini-2.5-flash-lite as recommended by Google AI Studio
-    const modelName = "gemini-2.5-pro";
+    const modelName = "gemini-2.0-flash-lite";
 
     try {
       const genAI = this.getClient();
