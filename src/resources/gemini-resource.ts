@@ -35,9 +35,8 @@ export class GeminiResource {
       throw new Error("Nėra kategorijų. Pirmiausia sukurkite kategorijas.");
     }
 
-    // Try gemini-1.0-pro - the original stable model for v1beta API
-    // If this fails too, it might be an API key configuration issue
-    const modelName = "gemini-1.0-pro";
+    // Use gemini-2.5-flash-lite as recommended by Google AI Studio
+    const modelName = "gemini-2.5-flash-lite";
     console.log("Attempting to use Gemini model:", modelName);
     console.log("API Key configured:", import.meta.env.VITE_GEMINI_API_KEY ? "Yes (length: " + import.meta.env.VITE_GEMINI_API_KEY.length + ")" : "No");
 
@@ -48,13 +47,11 @@ export class GeminiResource {
       // Sanitize the dish name by escaping special characters
       const sanitizedDishName = dishName.replace(/["\\\n\r]/g, " ").trim();
 
-      const prompt = `Given the dish name "${sanitizedDishName}" and the following existing categories: ${existingCategories.join(", ")}.
-
-Suggest 3-5 most relevant category names from the existing categories list that would be appropriate for this dish. Only return category names that exist in the provided list.
-
-Return ONLY a JSON array of category names, without any additional text or formatting. Example: ["Category1", "Category2", "Category3"]
-
-If no existing categories match well, return an empty array: []`;
+      // Format prompt similar to Google AI Studio recommendation
+      const prompt = `Given the dish "${sanitizedDishName}" and the following categories: ${existingCategories.join(", ")}.
+Suggest the most relevant categories for this dish.
+Format your response as a JSON array of strings, e.g., ["Category1", "Category2"].
+Do not include any other text or explanation outside of the JSON array.`;
 
       console.log("Gemini request - Dish:", sanitizedDishName, "Categories:", existingCategories);
 
@@ -72,10 +69,10 @@ If no existing categories match well, return an empty array: []`;
           cleanText = text.replace(/```json?\n?/g, "").replace(/```/g, "").trim();
         }
 
-        const suggestions = JSON.parse(cleanText);
-        if (Array.isArray(suggestions)) {
+        const suggestedCategories = JSON.parse(cleanText);
+        if (Array.isArray(suggestedCategories)) {
           // Filter to only include categories that actually exist
-          const filtered = suggestions.filter((cat) =>
+          const filtered = suggestedCategories.filter((cat) =>
             existingCategories.includes(cat),
           );
           console.log("Filtered suggestions:", filtered);
@@ -88,7 +85,7 @@ If no existing categories match well, return an empty array: []`;
         throw new Error(`Nepavyko apdoroti AI atsakymo. Atsakymas: ${text.substring(0, 100)}`);
       }
     } catch (error) {
-      console.error("Error getting category suggestions from Gemini:", error);
+      console.error("Error suggesting dish categories:", error);
       // Re-throw the error so the UI can display it
       if (error instanceof Error) {
         throw error;
