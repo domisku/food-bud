@@ -199,7 +199,7 @@ const AddDish: Component = () => {
         {suggestedCategories().length > 0 && (
           <div class="mb-4 p-3 bg-violet-50 rounded-md mt-2">
             <p class="text-sm text-violet-900 font-semibold mb-2">AI pasiūlytos kategorijos:</p>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
               <For each={suggestedCategories()}>
                 {(categoryName) => (
                   <button
