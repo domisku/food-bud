@@ -37,8 +37,6 @@ export class GeminiResource {
 
     // Use gemini-2.5-flash-lite as recommended by Google AI Studio
     const modelName = "gemini-2.5-flash-lite";
-    console.log("Attempting to use Gemini model:", modelName);
-    console.log("API Key configured:", import.meta.env.VITE_GEMINI_API_KEY ? "Yes (length: " + import.meta.env.VITE_GEMINI_API_KEY.length + ")" : "No");
 
     try {
       const genAI = this.getClient();
@@ -53,13 +51,9 @@ Suggest the most relevant categories for this dish.
 Format your response as a JSON array of strings, e.g., ["Category1", "Category2"].
 Do not include any other text or explanation outside of the JSON array.`;
 
-      console.log("Gemini request - Dish:", sanitizedDishName, "Categories:", existingCategories);
-
       const result = await model.generateContent(prompt);
       const response = result.response;
       const text = response.text().trim();
-
-      console.log("Gemini response:", text);
 
       // Parse the JSON response
       try {
@@ -72,20 +66,16 @@ Do not include any other text or explanation outside of the JSON array.`;
         const suggestedCategories = JSON.parse(cleanText);
         if (Array.isArray(suggestedCategories)) {
           // Filter to only include categories that actually exist
-          const filtered = suggestedCategories.filter((cat) =>
+          return suggestedCategories.filter((cat) =>
             existingCategories.includes(cat),
           );
-          console.log("Filtered suggestions:", filtered);
-          return filtered;
         } else {
           throw new Error("AI atsakymas nėra masyvas");
         }
       } catch (parseError) {
-        console.error("Failed to parse Gemini response:", text, parseError);
         throw new Error(`Nepavyko apdoroti AI atsakymo. Atsakymas: ${text.substring(0, 100)}`);
       }
     } catch (error) {
-      console.error("Error suggesting dish categories:", error);
       // Re-throw the error so the UI can display it
       if (error instanceof Error) {
         throw error;

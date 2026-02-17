@@ -30,6 +30,7 @@ const EditDish: Component = () => {
   const [contents, setContents] = createSignal<object>(null);
   const [dishName, setDishName] = createSignal<string>("");
   const [isLoadingSuggestions, setIsLoadingSuggestions] = createSignal(false);
+  const [suggestedCategories, setSuggestedCategories] = createSignal<string[]>([]);
 
   const dish = location.state as IDish;
 
@@ -116,41 +117,24 @@ const EditDish: Component = () => {
       const allCategories = categories() || [];
       const categoryNames = allCategories.map((c) => c.name);
       
-      console.log("Requesting suggestions for:", name, "with categories:", categoryNames);
-      
       const suggestions = await GeminiResource.suggestCategories(
         name,
         categoryNames,
       );
 
-      console.log("Received suggestions:", suggestions);
-
       if (suggestions.length === 0) {
         toast("Nepavyko rasti tinkamų kategorijų pasiūlymų", {
           icon: "💡",
         });
+        setSuggestedCategories([]);
         return;
       }
 
-      // Auto-select suggested categories
-      const suggestedCategoryIds = allCategories
-        .filter((c) => suggestions.includes(c.name))
-        .map((c) => c.id);
-      
-      console.log("Matched categories:", suggestedCategoryIds);
-      
-      // Update both states together
-      const newChecked = { ...checked() };
-      suggestedCategoryIds.forEach((id) => {
-        newChecked[id] = true;
-      });
-      setChecked(newChecked);
-      setSelectedCategoryIds(suggestedCategoryIds);
-      
+      // Store suggestions as tags (don't auto-apply)
+      setSuggestedCategories(suggestions);
       const count = suggestions.length;
       toast.success(`Pasiūlyta ${count} ${getPluralizedCategoryWord(count)}`);
     } catch (error) {
-      console.error("Error in getSuggestedCategories:", error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -159,6 +143,19 @@ const EditDish: Component = () => {
     } finally {
       setIsLoadingSuggestions(false);
     }
+  };
+
+  const applySuggestedCategory = (categoryName: string) => {
+    const allCategories = categories() || [];
+    const category = allCategories.find((c) => c.name === categoryName);
+    
+    if (category && !checked()[category.id]) {
+      setSelectedCategoryIds((curr) => [...curr, category.id]);
+      setChecked((c) => ({ ...c, [category.id]: true }));
+    }
+    
+    // Remove from suggestions after applying
+    setSuggestedCategories((curr) => curr.filter((c) => c !== categoryName));
   };
 
   return (
@@ -185,27 +182,53 @@ const EditDish: Component = () => {
           onContentsChange={onContentsChange}
         ></QuillEditor>
 
-        <Button
-          type="button"
-          onClick={getSuggestedCategories}
-          disabled={isLoadingSuggestions()}
-          class="mb-4"
-        >
-          {isLoadingSuggestions() ? "Kraunama..." : "🤖 Pasiūlyti kategorijas su AI"}
-        </Button>
+        <label class="block mb-2">Kategorijos</label>
+        
+        <div class="flex items-start gap-2 mb-4">
+          <div class="flex-1">
+            <Selector onClearAll={onClearAll} openUp={true}>
+              <For each={categories()}>
+                {(category) => (
+                  <Checkbox
+                    onChange={(e: any) => onChange(e, category.id)}
+                    checked={checked()[category.id]}
+                  >
+                    {category.name}
+                  </Checkbox>
+                )}
+              </For>
+            </Selector>
+          </div>
+          
+          <button
+            type="button"
+            onClick={getSuggestedCategories}
+            disabled={isLoadingSuggestions()}
+            class="rounded-md p-2 text-2xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Pasiūlyti kategorijas su AI"
+          >
+            {isLoadingSuggestions() ? "⏳" : "🤖"}
+          </button>
+        </div>
 
-        <Selector onClearAll={onClearAll} openUp={true}>
-          <For each={categories()}>
-            {(category) => (
-              <Checkbox
-                onChange={(e: any) => onChange(e, category.id)}
-                checked={checked()[category.id]}
-              >
-                {category.name}
-              </Checkbox>
-            )}
-          </For>
-        </Selector>
+        {suggestedCategories().length > 0 && (
+          <div class="mb-4 p-3 bg-violet-50 rounded-md">
+            <p class="text-sm text-violet-900 font-semibold mb-2">AI pasiūlytos kategorijos:</p>
+            <div class="flex flex-wrap gap-2">
+              <For each={suggestedCategories()}>
+                {(categoryName) => (
+                  <button
+                    type="button"
+                    onClick={() => applySuggestedCategory(categoryName)}
+                    class="px-3 py-1 bg-white border border-violet-300 rounded-full text-sm text-violet-700 hover:bg-violet-100 hover:border-violet-400 transition-colors"
+                  >
+                    {categoryName}
+                  </button>
+                )}
+              </For>
+            </div>
+          </div>
+        )}
 
         <Button type="submit">Išsaugoti</Button>
       </form>
