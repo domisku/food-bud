@@ -41,7 +41,7 @@ const EditCategory: Component = () => {
 
       await CategoryResource.updateCategory(cat.id, { name });
 
-      navigate(`/categories/${cat.id}`);
+      navigate("/categories");
     } catch (error) {
       handleError(error);
     }
