@@ -150,9 +150,9 @@ const AddDish: Component = () => {
         <Heading>Naujas patiekalas</Heading>
       </div>
       
-      {/* Scrollable Content */}
-      <div class="flex-1 overflow-y-auto">
-        <form onSubmit={submit} class="flex flex-col">
+      <form onSubmit={submit} class="flex-1 flex flex-col min-h-0">
+        {/* Scrollable Content */}
+        <div class="flex-1 overflow-y-auto">
           <label class="block" for="name">
             Pavadinimas
           </label>
@@ -220,13 +220,13 @@ const AddDish: Component = () => {
               </div>
             </div>
           )}
-        </form>
-      </div>
-      
-      {/* Sticky Footer */}
-      <div class="flex-shrink-0 mt-4">
-        <Button type="submit" onClick={submit}>Pridėti</Button>
-      </div>
+        </div>
+        
+        {/* Sticky Footer */}
+        <div class="flex-shrink-0 mt-4">
+          <Button type="submit">Pridėti</Button>
+        </div>
+      </form>
     </div>
   );
 };

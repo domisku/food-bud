@@ -172,9 +172,9 @@ const EditDish: Component = () => {
         <Heading>Redaguoti patiekalą</Heading>
       </div>
       
-      {/* Scrollable Content */}
-      <div class="flex-1 overflow-y-auto">
-        <form onSubmit={onSubmit} class="flex flex-col">
+      <form onSubmit={onSubmit} class="flex-1 flex flex-col min-h-0">
+        {/* Scrollable Content */}
+        <div class="flex-1 overflow-y-auto">
           <label class="block" for="name">
             Pavadinimas
           </label>
@@ -241,13 +241,13 @@ const EditDish: Component = () => {
               </div>
             </div>
           )}
-        </form>
-      </div>
-      
-      {/* Sticky Footer */}
-      <div class="flex-shrink-0 mt-4">
-        <Button type="submit" onClick={onSubmit}>Išsaugoti</Button>
-      </div>
+        </div>
+        
+        {/* Sticky Footer */}
+        <div class="flex-shrink-0 mt-4">
+          <Button type="submit">Išsaugoti</Button>
+        </div>
+      </form>
     </div>
   );
 };
