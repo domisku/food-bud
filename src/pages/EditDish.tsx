@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "@solidjs/router";
-import { Component, createSignal, For, onMount } from "solid-js";
+import { Component, createEffect, createSignal, For, onMount } from "solid-js";
 import Backlink from "../components/Backlink";
 import Button from "../components/Button";
 import Checkbox from "../components/Checkbox";
@@ -31,6 +31,8 @@ const EditDish: Component = () => {
   const [dishName, setDishName] = createSignal<string>("");
   const [isLoadingSuggestions, setIsLoadingSuggestions] = createSignal(false);
   const [suggestedCategories, setSuggestedCategories] = createSignal<string[]>([]);
+  
+  let scrollableContentRef: HTMLDivElement | undefined;
 
   const dish = location.state as IDish;
 
@@ -138,6 +140,12 @@ const EditDish: Component = () => {
         (name) => !selectedCategoryNames.includes(name)
       );
 
+      if (filteredSuggestions.length === 0) {
+        toast("Visos pasiūlytos kategorijos jau pasirinktos", {
+          icon: "✓",
+        });
+      }
+
       // Store suggestions as tags (don't auto-apply)
       setSuggestedCategories(filteredSuggestions);
     } catch (error) {
@@ -164,81 +172,105 @@ const EditDish: Component = () => {
     setSuggestedCategories((curr) => curr.filter((c) => c !== categoryName));
   };
 
+  // Auto-scroll to bottom when suggestions appear
+  createEffect(() => {
+    const suggestions = suggestedCategories();
+    if (suggestions.length > 0 && scrollableContentRef) {
+      // Delay ensures DOM has finished rendering the suggestions before scrolling
+      setTimeout(() => {
+        scrollableContentRef?.scrollTo({
+          top: scrollableContentRef.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+  });
+
   return (
-    <>
-      <Backlink class="mb-6">Grįžti</Backlink>
-      <Heading>Redaguoti patiekalą</Heading>
-      <form onSubmit={onSubmit} class="flex flex-col">
-        <label class="block" for="name">
-          Pavadinimas
-        </label>
-        <TextInput
-          id="name"
-          placeholder={"Bulviniai blynai"}
-          value={dish.name}
-          onInput={(e) => setDishName(e.currentTarget.value)}
-        ></TextInput>
+    <div class="flex flex-col h-full">
+      {/* Sticky Header */}
+      <div class="flex-shrink-0 mb-6">
+        <Backlink class="mb-6">Grįžti</Backlink>
+        <Heading>Redaguoti patiekalą</Heading>
+      </div>
+      
+      <form onSubmit={onSubmit} class="flex-1 flex flex-col min-h-0">
+        {/* Scrollable Content */}
+        <div ref={scrollableContentRef} class="flex-1 overflow-y-auto pr-1">
+          <label class="block" for="name">
+            Pavadinimas
+          </label>
+          <TextInput
+            id="name"
+            placeholder={"Bulviniai blynai"}
+            value={dish.name}
+            onInput={(e) => setDishName(e.currentTarget.value)}
+          ></TextInput>
 
-        <label class="block" for="description">
-          Aprašymas
-        </label>
-        <QuillEditor
-          id="description"
-          contents={dish.description}
-          onContentsChange={onContentsChange}
-        ></QuillEditor>
+          <label class="block" for="description">
+            Aprašymas
+          </label>
+          <QuillEditor
+            id="description"
+            contents={dish.description}
+            onContentsChange={onContentsChange}
+          ></QuillEditor>
 
-        <label class="block mb-2">Kategorijos</label>
-        
-        <div class="flex items-start gap-2">
-          <div class="flex-1">
-            <Selector onClearAll={onClearAll} openUp={true}>
-              <For each={categories()}>
-                {(category) => (
-                  <Checkbox
-                    onChange={(e: any) => onChange(e, category.id)}
-                    checked={checked()[category.id]}
-                  >
-                    {category.name}
-                  </Checkbox>
-                )}
-              </For>
-            </Selector>
-          </div>
+          <label class="block mb-2">Kategorijos</label>
           
-          <button
-            type="button"
-            onClick={getSuggestedCategories}
-            disabled={isLoadingSuggestions()}
-            class="h-[42px] w-10 flex items-center justify-center rounded-md border border-transparent text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
-            title="Pasiūlyti kategorijas su AI"
-          >
-            {isLoadingSuggestions() ? "⏳" : "🤖"}
-          </button>
-        </div>
-
-        {suggestedCategories().length > 0 && (
-          <div class="mb-4 p-3 bg-violet-50 rounded-md -mt-4">
-            <p class="text-sm text-violet-900 font-semibold mb-2">AI pasiūlytos kategorijos:</p>
-            <div class="flex flex-wrap gap-2">
-              <For each={suggestedCategories()}>
-                {(categoryName) => (
-                  <button
-                    type="button"
-                    onClick={() => applySuggestedCategory(categoryName)}
-                    class="px-3 py-1 bg-white border border-violet-300 rounded-full text-sm text-violet-700 hover:bg-violet-100 hover:border-violet-400 transition-colors"
-                  >
-                    {categoryName}
-                  </button>
-                )}
-              </For>
+          <div class="flex items-start gap-2">
+            <div class="flex-1">
+              <Selector onClearAll={onClearAll} openUp={true}>
+                <For each={categories()}>
+                  {(category) => (
+                    <Checkbox
+                      onChange={(e: any) => onChange(e, category.id)}
+                      checked={checked()[category.id]}
+                    >
+                      {category.name}
+                    </Checkbox>
+                  )}
+                </For>
+              </Selector>
             </div>
+            
+            <button
+              type="button"
+              onClick={getSuggestedCategories}
+              disabled={isLoadingSuggestions()}
+              class="h-[42px] w-10 flex items-center justify-center rounded-md border border-transparent text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              title="Pasiūlyti kategorijas su AI"
+            >
+              {isLoadingSuggestions() ? "⏳" : "🤖"}
+            </button>
           </div>
-        )}
 
-        <Button type="submit">Išsaugoti</Button>
+          {suggestedCategories().length > 0 && (
+            <div class="mb-4 p-3 bg-violet-50 rounded-md mt-2">
+              <p class="text-sm text-violet-900 font-semibold mb-2">AI pasiūlytos kategorijos:</p>
+              <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                <For each={suggestedCategories()}>
+                  {(categoryName) => (
+                    <button
+                      type="button"
+                      onClick={() => applySuggestedCategory(categoryName)}
+                      class="px-3 py-1 bg-white border border-violet-300 rounded-full text-sm text-violet-700 hover:bg-violet-100 hover:border-violet-400 transition-colors"
+                    >
+                      {categoryName}
+                    </button>
+                  )}
+                </For>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Sticky Footer */}
+        <div class="flex-shrink-0 mt-4">
+          <Button type="submit" class="w-full">Išsaugoti</Button>
+        </div>
       </form>
-    </>
+    </div>
   );
 };
 
