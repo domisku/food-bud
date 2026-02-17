@@ -35,9 +35,9 @@ export class GeminiResource {
       throw new Error("Nėra kategorijų. Pirmiausia sukurkite kategorijas.");
     }
 
-    // Using gemini-1.5-flash-001 - stable versioned model identifier
-    // This is recommended over non-versioned names for production use
-    const modelName = "gemini-1.5-flash-001";
+    // SDK 0.24.1 uses v1beta API endpoint
+    // For v1beta, use "models/gemini-pro" which is the stable model name
+    const modelName = "models/gemini-pro";
     console.log("Attempting to use Gemini model:", modelName);
 
     try {
