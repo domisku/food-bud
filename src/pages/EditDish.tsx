@@ -130,10 +130,16 @@ const EditDish: Component = () => {
         return;
       }
 
+      // Filter out already selected categories
+      const selectedCategoryNames = allCategories
+        .filter((c) => selectedCategoryIds().includes(c.id))
+        .map((c) => c.name);
+      const filteredSuggestions = suggestions.filter(
+        (name) => !selectedCategoryNames.includes(name)
+      );
+
       // Store suggestions as tags (don't auto-apply)
-      setSuggestedCategories(suggestions);
-      const count = suggestions.length;
-      toast.success(`Pasiūlyta ${count} ${getPluralizedCategoryWord(count)}`);
+      setSuggestedCategories(filteredSuggestions);
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -204,7 +210,7 @@ const EditDish: Component = () => {
             type="button"
             onClick={getSuggestedCategories}
             disabled={isLoadingSuggestions()}
-            class="w-10 h-10 flex items-center justify-center rounded-md border border-transparent text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+            class="h-[42px] w-10 flex items-center justify-center rounded-md border border-transparent text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
             title="Pasiūlyti kategorijas su AI"
           >
             {isLoadingSuggestions() ? "⏳" : "🤖"}
