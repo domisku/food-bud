@@ -204,7 +204,7 @@ const EditDish: Component = () => {
             type="button"
             onClick={getSuggestedCategories}
             disabled={isLoadingSuggestions()}
-            class="rounded-md p-2 text-2xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="w-10 h-10 flex items-center justify-center rounded-md text-xl hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
             title="Pasiūlyti kategorijas su AI"
           >
             {isLoadingSuggestions() ? "⏳" : "🤖"}
