@@ -35,10 +35,11 @@ export class GeminiResource {
       throw new Error("Nėra kategorijų. Pirmiausia sukurkite kategorijas.");
     }
 
-    // SDK 0.24.1 uses v1beta API endpoint
-    // For v1beta, use "models/gemini-pro" which is the stable model name
-    const modelName = "models/gemini-pro";
+    // Try gemini-1.0-pro - the original stable model for v1beta API
+    // If this fails too, it might be an API key configuration issue
+    const modelName = "gemini-1.0-pro";
     console.log("Attempting to use Gemini model:", modelName);
+    console.log("API Key configured:", import.meta.env.VITE_GEMINI_API_KEY ? "Yes (length: " + import.meta.env.VITE_GEMINI_API_KEY.length + ")" : "No");
 
     try {
       const genAI = this.getClient();
