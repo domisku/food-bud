@@ -176,7 +176,7 @@ const EditDish: Component = () => {
   createEffect(() => {
     const suggestions = suggestedCategories();
     if (suggestions.length > 0 && scrollableContentRef) {
-      // Small delay to ensure DOM is updated
+      // Delay ensures DOM has finished rendering the suggestions before scrolling
       setTimeout(() => {
         scrollableContentRef?.scrollTo({
           top: scrollableContentRef.scrollHeight,
