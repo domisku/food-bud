@@ -11,6 +11,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { ICategory } from "../models/category.interface";
+import { sortByPropertyLt } from "../utils/lithuanian-sort";
 import { db } from "./firebase"; // Assuming your firebase.ts exports 'db'
 
 export class CategoryResource {
@@ -43,7 +44,7 @@ export class CategoryResource {
 
   /**
    * Retrieves all categories from Firestore.
-   * @returns A promise that resolves with an array of ICategory objects.
+   * @returns A promise that resolves with an array of ICategory objects sorted by name using Lithuanian locale.
    */
   static async getCategories(): Promise<ICategory[]> {
     const querySnapshot = await getDocs(this.categoriesCollectionRef);
@@ -53,7 +54,7 @@ export class CategoryResource {
       categories.push({ id: doc.id, ...doc.data() } as ICategory);
     });
 
-    return categories;
+    return sortByPropertyLt(categories, 'name');
   }
 
   /**
@@ -107,7 +108,8 @@ export class CategoryResource {
       }
     });
 
-    return categoryNames;
+    // Sort category names using Lithuanian locale
+    return categoryNames.sort((a, b) => a.localeCompare(b, 'lt', { sensitivity: 'base' }));
   }
 
   /**

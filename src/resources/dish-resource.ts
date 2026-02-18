@@ -11,6 +11,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { IDish } from "../models/dish.interface";
+import { sortByPropertyLt } from "../utils/lithuanian-sort";
 import { db } from "./firebase"; // Assuming your firebase.ts exports 'db'
 
 export class DishResource {
@@ -64,7 +65,8 @@ export class DishResource {
       dishes.push({ id: doc.id, ...doc.data() } as IDish);
     });
 
-    return dishes;
+    // Re-sort using Lithuanian locale for proper character ordering
+    return sortByPropertyLt(dishes, 'name');
   }
 
   static async getFilteredDishes(filters: string[]): Promise<IDish[]> {
@@ -122,7 +124,8 @@ export class DishResource {
       dishes.push({ id: doc.id, ...doc.data() } as IDish);
     });
 
-    return dishes;
+    // Sort using Lithuanian locale for proper character ordering
+    return sortByPropertyLt(dishes, 'name');
   }
 
   static async deleteDish(id: string): Promise<void> {
